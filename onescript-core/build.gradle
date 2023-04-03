@@ -1,0 +1,23 @@
+plugins {
+    // java
+    id 'java'
+    id 'java-library'
+
+    // package publishing
+    id 'maven-publish'
+    id 'signing'
+
+    // for shading in dependencies
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+/* artifact properties */
+version '1.0.0'
+
+/* module properties/configuration */
+ext {
+    hasTesting = true
+}
+
+/* apply buildsrc script */ 
+apply from: '../buildsrc/module.gradle', to: project

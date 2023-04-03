@@ -1,0 +1,17 @@
+/// buildsrc start ///
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url 'https://papermc.io/repo/repository/maven-public/'}
+    }
+}
+/// buildsrc end ///
+
+rootProject.name = 'onescript'
+
+
+/// buildsrc start ///
+include 'buildsrc'
+/// buildsrc end ///
+
+include 'onescript-core'
