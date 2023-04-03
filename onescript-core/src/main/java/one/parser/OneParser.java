@@ -1,5 +1,6 @@
 package one.parser;
 
+import one.parser.error.OneParseException;
 import one.parser.token.BuiltInTokenTypes;
 import one.parser.token.Token;
 import one.parser.token.TokenParser;
@@ -58,12 +59,13 @@ public class OneParser {
      * @return The context.
      */
     public LexContext lex(final LexContext context) {
-        while (context.curr() != StringReader.EOF) {
+        while (context.hasNext()) {
             context.consumeWhitespace();
 
             // match string literal
             if (context.curr() == '"') {
                 context.addToken(BuiltInTokenTypes.STRING_LITERAL.parseToken(context));
+                continue;
             }
 
             // match number literal
@@ -71,6 +73,7 @@ public class OneParser {
             // will start with 0cNUMBER, and 0 is a base-10 digit
             if (StringReader.isDigit(context.curr(), 10)) {
                 context.addToken(BuiltInTokenTypes.NUMBER_LITERAL.parseToken(context));
+                continue;
             }
 
             /* trail-and-error all remaining non-builtin token parsers */
@@ -80,9 +83,8 @@ public class OneParser {
             }
 
             if (tk == null) {
-                // todo: throw error
-                context.next();
-                continue;
+                // throw lexer error
+                throw context.endOrHere(new OneParseException("unexpected character: '" + context.curr() + "'"));
             } else {
                 context.addToken(tk);
             }

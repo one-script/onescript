@@ -1,6 +1,7 @@
 package one.parser.token;
 
 import one.parser.OneParser;
+import one.parser.util.StringLocatable;
 import one.parser.util.StringLocation;
 
 /**
@@ -13,7 +14,7 @@ import one.parser.util.StringLocation;
  *
  * @param <T> The value type.
  */
-public class Token<T> {
+public class Token<T> implements StringLocatable {
 
     TokenType<T> type;
     T value;
@@ -58,10 +59,12 @@ public class Token<T> {
         return this;
     }
 
+    @Override
     public StringLocation getLocation() {
         return location;
     }
 
+    @Override
     public Token<T> setLocation(StringLocation location) {
         this.location = location;
         return this;

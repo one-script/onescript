@@ -24,6 +24,14 @@ public class BasicLexerTest {
     record Email(String user, String host) { }
 
     @Test
+    void test_BuiltInTokens() {
+        String src = """
+                "a"    "b" 4    "c"      6 "hhhhh ello"
+                """;
+        System.out.println(doLex(src, null));
+    }
+
+    @Test
     void test_RegexTokenTypes() {
         TokenType<Email> emailToken = TokenType.regexBased("email", "(.+)@(.+\\..+)",
                 match -> new Email(match.group(1), match.group(2)));

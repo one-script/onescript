@@ -75,11 +75,27 @@ public class StringReader implements Iterable<Character> {
 
     /* Not required, for ease of use. */
     private String fileName;
-    private Stack<Integer> startIndices;
-    /* Scanner implementation */
-    private java.io.StringReader scannerReader;
-    private Scanner scanner;
-    private int lastScannerIdx;
+    private Stack<Integer> startIndices = new Stack<>();
+//    /* Scanner implementation */
+//    private java.io.StringReader scannerReader;
+//    private Scanner scanner;
+//    private int lastScannerIdx;
+
+    //    public Scanner toScanner() {
+//        if (this.scanner == null) {
+//            this.scannerReader = new java.io.StringReader(str);
+//            this.scanner = new Scanner(scannerReader);
+//        }
+//
+//        if (lastScannerIdx != index) {
+//            try {
+//                scannerReader.reset();
+//                scannerReader.skip(index);
+//            } catch (Exception ignored) { }
+//        }
+//
+//        return scanner;
+//    }
 
     /**
      * Constructor.
@@ -100,22 +116,6 @@ public class StringReader implements Iterable<Character> {
      */
     public StringReader(String str) {
         this(str, 0);
-    }
-
-    public Scanner toScanner() {
-        if (this.scanner == null) {
-            this.scannerReader = new java.io.StringReader(str);
-            this.scanner = new Scanner(scannerReader);
-        }
-
-        if (lastScannerIdx != index) {
-            try {
-                scannerReader.reset();
-                scannerReader.skip(index);
-            } catch (Exception ignored) { }
-        }
-
-        return scanner;
     }
 
     /**
@@ -170,6 +170,11 @@ public class StringReader implements Iterable<Character> {
         if (startIndices.size() == 0)
             return here();
         return end();
+    }
+
+    public <S extends StringLocatable> S endOrHere(S locatable) {
+        locatable.setLocation(endOrHere());
+        return locatable;
     }
 
     /**

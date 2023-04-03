@@ -21,3 +21,11 @@ ext {
 
 /* apply buildsrc script */ 
 apply from: '../buildsrc/module.gradle', to: project
+
+dependencies {
+
+    // ASM for compilation of scripts
+    implementation 'org.ow2.asm:asm:9.5'
+    implementation 'org.ow2.asm:asm-tree:9.5'
+
+}
