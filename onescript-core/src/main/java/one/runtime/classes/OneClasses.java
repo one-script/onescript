@@ -1,6 +1,8 @@
 package one.runtime.classes;
 
 /**
+ * OneScript class utility and standard methods.
+ *
  * OneScript classes are always present as descriptors
  * at runtime. Once referenced, they are dynamically compiled
  * into Java bytecode and loaded as JVM classes under the
@@ -9,7 +11,7 @@ package one.runtime.classes;
  * An 'internal' (class) name refers to a symbol within OneScript.
  * A JVM (class) name refers to a mirror symbol for the JVM.
  */
-public class RuntimeClasses {
+public class OneClasses {
 
     public static final String CLASSES_JVM_PACKAGE = "oneclasses";
 

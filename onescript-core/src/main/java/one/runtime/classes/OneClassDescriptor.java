@@ -12,7 +12,7 @@ import one.type.OneType;
  * compilation and early runtime purposes without having
  * to actually generate and load the class.
  *
- * @see RuntimeClasses For a more detailed description of how classes work.
+ * @see OneClasses For a more detailed description of how classes work.
  */
 public class OneClassDescriptor {
 
@@ -40,7 +40,7 @@ public class OneClassDescriptor {
         this.runtime = runtime;
 
         this.internalClassName = internalClassName;
-        this.jvmClassName = RuntimeClasses.getJVMClassName(internalClassName);
+        this.jvmClassName = OneClasses.getJVMClassName(internalClassName);
     }
 
     /* Getters */
