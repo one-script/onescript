@@ -1,15 +1,54 @@
 package one.parser.token;
 
 import one.parser.LexContext;
+import one.parser.util.RegexValueFactory;
 
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Describes the type of a token and how to parse it.
  *
  * @param <T> The type of captured value.
  */
-public abstract class TokenType<T> {
+public abstract class TokenType<T> implements TokenParser<T> {
+
+    public static <T> TokenType<T> fromParser(String name,
+                                              TokenParser<T> parser) {
+        return new TokenType<>(name) {
+            @Override
+            public Token<T> parseToken(LexContext context) {
+                return parser.parseToken(context);
+            }
+        };
+    }
+
+    public static <T> TokenType<T> createWithParser(String name,
+                                                    Function<TokenType<T>, TokenParser<T>> parserProvider) {
+        return new TokenType<>(name) {
+            TokenParser<T> parser = parserProvider.apply(this);
+
+            @Override
+            public Token<T> parseToken(LexContext context) {
+                return parser.parseToken(context);
+            }
+        };
+    }
+
+    public static <T> TokenType<T> regexBased(String name,
+                                              Pattern pattern,
+                                              RegexValueFactory<T> valueFactory) {
+        return createWithParser(name, type -> new RegexTokenParser<>(pattern, RegexTokenFactory.of(type, valueFactory)));
+    }
+
+    public static <T> TokenType<T> regexBased(String name,
+                                              String pattern,
+                                              RegexValueFactory<T> valueFactory) {
+        return regexBased(name, Pattern.compile(pattern, RegexTokenParser.DEFAULT_PATTERN_FLAGS), valueFactory);
+    }
+
+    ////////////////////////////////////////////
 
     /**
      * The internal identifier/name of this token type.
@@ -41,16 +80,5 @@ public abstract class TokenType<T> {
     public int hashCode() {
         return Objects.hash(name);
     }
-
-    /**
-     * Tries to parse a token in the given context.
-     *
-     * This is expected to consume the token if successful,
-     * otherwise to return null and stay at the current position.
-     *
-     * @param context The context.
-     * @return The token or null if it failed.
-     */
-    public abstract Token<T> parseToken(LexContext context);
 
 }

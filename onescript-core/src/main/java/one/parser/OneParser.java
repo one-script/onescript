@@ -1,6 +1,8 @@
 package one.parser;
 
 import one.parser.token.BuiltInTokenTypes;
+import one.parser.token.Token;
+import one.parser.token.TokenParser;
 import one.parser.token.TokenType;
 import one.parser.util.StringReader;
 
@@ -20,17 +22,27 @@ public class OneParser {
      * All registered token types mapped by name.
      */
     final Map<String, TokenType<?>> tokenTypes = new HashMap<>();
-    final List<TokenType<?>> tokenTypeList = new ArrayList<>();
+    final List<TokenParser<?>> tokenParsers = new ArrayList<>();
 
     public OneParser addTokenType(TokenType<?> type) {
         tokenTypes.put(type.getName(), type);
-        tokenTypeList.add(type);
+        tokenParsers.add(type);
         return this;
     }
 
     public OneParser removeTokenType(TokenType<?> type) {
         tokenTypes.remove(type.getName());
-        tokenTypeList.remove(type);
+        tokenParsers.remove(type);
+        return this;
+    }
+
+    public OneParser addTokenParser(TokenParser<?> parser) {
+        tokenParsers.add(parser);
+        return this;
+    }
+
+    public OneParser removeTokenParser(TokenParser<?> parser) {
+        tokenParsers.remove(parser);
         return this;
     }
 
@@ -61,8 +73,19 @@ public class OneParser {
                 context.addToken(BuiltInTokenTypes.NUMBER_LITERAL.parseToken(context));
             }
 
-            // todo: throw exception in this case
-            context.next();
+            /* trail-and-error all remaining non-builtin token parsers */
+            Token<?> tk = null;
+            for (TokenParser<?> parser : tokenParsers) {
+                tk = parser.parseToken(context);
+            }
+
+            if (tk == null) {
+                // todo: throw error
+                context.next();
+                continue;
+            } else {
+                context.addToken(tk);
+            }
         }
 
         return context;

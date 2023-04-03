@@ -76,6 +76,10 @@ public class StringReader implements Iterable<Character> {
     /* Not required, for ease of use. */
     private String fileName;
     private Stack<Integer> startIndices;
+    /* Scanner implementation */
+    private java.io.StringReader scannerReader;
+    private Scanner scanner;
+    private int lastScannerIdx;
 
     /**
      * Constructor.
@@ -96,6 +100,22 @@ public class StringReader implements Iterable<Character> {
      */
     public StringReader(String str) {
         this(str, 0);
+    }
+
+    public Scanner toScanner() {
+        if (this.scanner == null) {
+            this.scannerReader = new java.io.StringReader(str);
+            this.scanner = new Scanner(scannerReader);
+        }
+
+        if (lastScannerIdx != index) {
+            try {
+                scannerReader.reset();
+                scannerReader.skip(index);
+            } catch (Exception ignored) { }
+        }
+
+        return scanner;
     }
 
     /**
