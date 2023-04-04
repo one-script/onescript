@@ -857,8 +857,10 @@ public class StringReader implements Iterable<Character> {
         boolean neg = false;
         long r = 0;
         char c;
-        if (current() == '-')
+        if (current() == '-') {
             neg = true;
+            next();
+        }
         while ((c = current()) != DONE) {
             if (c == '_' || c == '\'') { next(); continue; }
             int nv = getDigit(c, radix);
@@ -901,11 +903,13 @@ public class StringReader implements Iterable<Character> {
     }
 
     public double collectDouble() {
+        // parse negative
         boolean neg = false;
         if (current() == '-') {
             neg = true;
             next();
         }
+
         double f = collectLong(10);
         if (current() == '.') {
             next();
@@ -921,7 +925,12 @@ public class StringReader implements Iterable<Character> {
                 next();
             }
             f += r;
+        } else if (current() == 'E' || current() == 'e') {
+            next();
+            long pow = collectLong();
+            f = f * Math.pow(10, pow);
         }
+
         return neg ? -f : f;
     }
 
