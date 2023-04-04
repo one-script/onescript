@@ -41,6 +41,11 @@ public class NUnaryOp extends NExpression {
     }
 
     @Override
+    public String getDataString() {
+        return operator + ": " + operand;
+    }
+
+    @Override
     public Object evaluateSimple() {
         return operator.evaluateSimple(operand.evaluateSimple());
     }

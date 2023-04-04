@@ -1,36 +1,20 @@
 package one.ast;
 
-public class NNumberConstant extends NExpression<Double> {
+public class NNumberConstant extends NConstant<Double> {
 
-    /** The value. */
-    private double value;
+    public NNumberConstant() { }
+
+    public NNumberConstant(Double value) {
+        super(value);
+    }
 
     public NNumberConstant(double value) {
-        this.value = value;
+        this(Double.valueOf(value));
     }
 
     @Override
     public String getTypeName() {
         return "numberConstant";
-    }
-
-    @Override
-    public String getDataString() {
-        return Double.toString(value);
-    }
-
-    public double getValue() {
-        return value;
-    }
-
-    public NNumberConstant setValue(double value) {
-        this.value = value;
-        return this;
-    }
-
-    @Override
-    public Double evaluateSimple() {
-        return value;
     }
 
 }

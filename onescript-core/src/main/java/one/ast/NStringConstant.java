@@ -1,23 +1,16 @@
 package one.ast;
 
-public class NStringConstant extends NExpression<String> {
+public class NStringConstant extends NConstant<String> {
 
     public NStringConstant() { }
 
     public NStringConstant(String value) {
-        this.value = value;
+        super(value);
     }
-
-    /** The value. */
-    private String value;
 
     @Override
     public String getTypeName() {
         return "strConstant";
-    }
-
-    public String getValue() {
-        return value;
     }
 
 }

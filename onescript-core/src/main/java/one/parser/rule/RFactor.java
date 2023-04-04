@@ -1,5 +1,6 @@
 package one.parser.rule;
 
+import one.ast.NConstant;
 import one.ast.NExpression;
 import one.ast.NUnaryOp;
 import one.lang.OneOperator;
@@ -35,7 +36,15 @@ public class RFactor extends ParserRule<NExpression> {
                     /* note that this refers to RFactor#parseNode,
                        so this will parse another factor, not any applicable rule */
                     this.parseNode(context);
-            return new NUnaryOp(unaryOp, factor);
+
+            NExpression node = new NUnaryOp(unaryOp, factor);
+
+            // perform constant optimization
+            if (context.optimizeConstants() && factor instanceof NConstant) {
+                node = NConstant.of(node.evaluateSimple());
+            }
+
+            return node;
         }
 
         /* collect initial value */
@@ -58,7 +67,14 @@ public class RFactor extends ParserRule<NExpression> {
             OneOperator unaryOp = currentOp.toPostfixUnary();
             if (unaryOp != null) {
                 context.next();
-                return new NUnaryOp(unaryOp, value);
+                NExpression node = new NUnaryOp(unaryOp, value);
+
+                // perform constant optimization
+                if (context.optimizeConstants() && value instanceof NConstant) {
+                    node = NConstant.of(node.evaluateSimple());
+                }
+
+                return node;
             }
         }
 

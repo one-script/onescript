@@ -26,6 +26,12 @@ public class ParseContext extends SequenceReader<Token<?>> {
     /** The root parser rule name. */
     private String rootParserRuleName;
 
+    /*
+        Settings
+     */
+
+    private boolean optimizeConstants = true;
+
     public ParseContext(OneParser parser,
                         Sequence<Token<?>> str,
                         String rootParserRuleName) {
@@ -100,7 +106,7 @@ public class ParseContext extends SequenceReader<Token<?>> {
      * @return The node.
      */
     @SuppressWarnings("unchecked")
-    public <N> N tryParseNext(String queryTag, Class<N> nClass) {
+    public <N> N tryParseNext(String queryTag) {
         // TODO: maybe cache the last successful parsers per tag
         //  and do some other shit for performance?
         ParserRule<?> bestRule = null;
@@ -117,6 +123,27 @@ public class ParseContext extends SequenceReader<Token<?>> {
             return null;
 
         return (N) bestRule.parseNode(this);
+    }
+
+    public <N> N tryParseNext(String queryTag, Class<N> nClass) {
+        return tryParseNext(queryTag);
+    }
+
+    public boolean optimizeConstants() {
+        return optimizeConstants;
+    }
+
+    /**
+     * If the parser should optimize constant expressions.
+     * A constant expression is an expression which can
+     * be evaluated at compile-time.
+     *
+     * @param optimizeConstants Value.
+     * @return This.
+     */
+    public ParseContext setOptimizeConstants(boolean optimizeConstants) {
+        this.optimizeConstants = optimizeConstants;
+        return this;
     }
 
 }

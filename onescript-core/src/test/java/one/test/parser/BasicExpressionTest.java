@@ -20,9 +20,12 @@ public class BasicExpressionTest {
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));
-        ParseContext parseContext = parser.parse(new ParseContext(parser,
-                Sequence.ofList(lexContext.getTokens()),
-                "expr"));
+        ParseContext parseContext = parser.parse(
+                new ParseContext(parser,
+                        Sequence.ofList(lexContext.getTokens()),
+                        "expr")
+                .setOptimizeConstants(true)
+        );
 
         System.out.println(lexContext.getTokens());
         System.out.println(parseContext.getRootNode());
