@@ -1,9 +1,10 @@
 package one.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import one.parser.util.StringLocatable;
+import one.parser.util.StringLocation;
+import one.parser.util.StringReader;
+
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -21,6 +22,8 @@ public class SequenceReader<T> {
     private Sequence<T> str;
     // the total string length
     private int len;
+
+    protected Stack<Integer> startIndices = new Stack<>();
 
     /**
      * Constructor.
@@ -41,6 +44,41 @@ public class SequenceReader<T> {
      */
     public SequenceReader(Sequence<T> str) {
         this(str, 0);
+    }
+
+    /**
+     * Begin a segment, pushing the start index
+     * onto the indices stack.
+     *
+     * @return This.
+     */
+    public SequenceReader<T> begin() {
+        startIndices.push(index());
+        return this;
+    }
+
+    /**
+     * End a segment, returning the starting index.
+     */
+    public int end() {
+        return startIndices.pop();
+    }
+
+    /**
+     * End the current segment if present and reset to
+     * the segments start position. If absent it will
+     * reset to index 0.
+     *
+     * @return This.
+     */
+    public SequenceReader<T> reset() {
+        if (startIndices.size() != 0) {
+            index(startIndices.pop());
+        } else {
+            index(0);
+        }
+
+        return this;
     }
 
     /**

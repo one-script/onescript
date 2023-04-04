@@ -17,7 +17,7 @@ public class BuiltInTokenTypes {
      *
      * Example: {@code "hello"} -> {@code stringLiteral(hello)}
      */
-    public static TokenType<String> STRING_LITERAL = new TokenType<>("stringLiteral") {
+    public static TokenType<String> STRING_LITERAL = new TokenType<>("literalString") {
         @Override
         public Token<String> parseToken(LexContext context) {
             int startIndex = context.index();
@@ -59,7 +59,7 @@ public class BuiltInTokenTypes {
      *
      * Example: {@code 123} -> {@code numberLiteral(123.0)}
      */
-    public static TokenType<Double> NUMBER_LITERAL = new TokenType<>("numberLiteral") {
+    public static TokenType<Double> NUMBER_LITERAL = new TokenType<>("literalNumber") {
         @Override
         public Token<Double> parseToken(LexContext context) {
             int startIndex = context.index();
@@ -78,5 +78,8 @@ public class BuiltInTokenTypes {
      * parsed in the same function.
      */
     public static TokenType<String> IDENTIFIER = TokenType.noParser("identifier");
+
+    public static TokenType<Void> LEFT_PAREN = TokenType.oneChar("leftParen", '(');
+    public static TokenType<Void> RIGHT_PAREN = TokenType.oneChar("rightParen", ')');
 
 }

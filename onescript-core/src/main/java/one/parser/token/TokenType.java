@@ -1,6 +1,6 @@
 package one.parser.token;
 
-import one.lang.Operator;
+import one.lang.OneOperator;
 import one.parser.LexContext;
 import one.parser.util.RegexValueFactory;
 
@@ -62,7 +62,18 @@ public abstract class TokenType<T> implements TokenParser<T> {
         return new KeywordTokenType(name);
     }
 
-    public static final TokenType<Operator> OPERATOR = noParser("operator");
+    public static TokenType<Void> oneChar(String name, char c) {
+        return new TokenType<>(name) {
+            @Override
+            public Token<Void> parseToken(LexContext context) {
+                if (context.curr() != c)
+                    return null;
+                return new Token<>(this);
+            }
+        };
+    }
+
+    public static final TokenType<OneOperator> OPERATOR = noParser("operator");
 
     ////////////////////////////////////////////
 
@@ -77,6 +88,10 @@ public abstract class TokenType<T> implements TokenParser<T> {
 
     public String getName() {
         return name;
+    }
+
+    public boolean is(String tag) {
+        return name.startsWith(tag);
     }
 
     @Override

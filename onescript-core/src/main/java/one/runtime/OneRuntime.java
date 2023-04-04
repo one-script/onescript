@@ -1,5 +1,6 @@
 package one.runtime;
 
+import one.parser.OneParser;
 import one.runtime.classes.ScriptClassLoader;
 import one.runtime.classes.ScriptClassRegistry;
 import one.runtime.classes.OneJVMClassLoader;
@@ -24,6 +25,11 @@ public class OneRuntime {
      */
     private ScriptClassLoader scriptClassLoader;
 
+    /**
+     * The script/expression parser to use.
+     */
+    private OneParser parser;
+
     /* Getters */
 
     public OneJVMClassLoader getJVMClassLoader() {
@@ -36,6 +42,10 @@ public class OneRuntime {
 
     public ScriptClassLoader getScriptClassLoader() {
         return scriptClassLoader;
+    }
+
+    public OneParser getParser() {
+        return parser;
     }
 
 }

@@ -1,7 +1,9 @@
 package one.parser;
 
-import one.lang.Operator;
+import one.lang.OneOperator;
+import one.ast.ASTNode;
 import one.parser.error.OneParseException;
+import one.parser.rule.ParserRule;
 import one.parser.token.*;
 import one.parser.util.OperatorRegistry;
 import one.parser.util.StringLocation;
@@ -45,6 +47,28 @@ public class OneParser {
      */
     final OperatorRegistry operators = new OperatorRegistry();
 
+    /**
+     * The registered parser rules by name.
+     */
+    final Map<String, ParserRule> parserRuleMap = new HashMap<>();
+    final List<ParserRule> parserRuleList = new ArrayList<>();
+
+    public OneParser addParserRule(ParserRule rule) {
+        parserRuleMap.put(rule.getName(), rule);
+        parserRuleList.add(rule);
+        return this;
+    }
+
+    public OneParser removeParserRule(ParserRule rule) {
+        parserRuleMap.remove(rule.getName());
+        parserRuleList.remove(rule);;
+        return this;
+    }
+
+    public ParserRule getParserRule(String name) {
+        return parserRuleMap.get(name);
+    }
+
     public OneParser addTokenType(TokenType<?> type) {
         tokenTypes.put(type.getName(), type);
         tokenParsers.add(type);
@@ -86,23 +110,29 @@ public class OneParser {
         return keywordTypes.get(name);
     }
 
-    public OneParser addOperator(Operator operator) {
+    public OneParser addOperator(OneOperator operator) {
         operators.insert(operator);
         return this;
     }
 
-    public OneParser removeOperator(Operator operator) {
+    public OneParser removeOperator(OneOperator operator) {
         operators.remove(operator);
         return this;
     }
 
+    public OperatorRegistry getOperators() {
+        return operators;
+    }
+
     /* Initialize Defaults */
     {
-        operators.insert(Operator.ADD);
-        operators.insert(Operator.SUB);
-        operators.insert(Operator.MUL);
-        operators.insert(Operator.DIV);
+        operators.insert(OneOperator.ADD);
+        operators.insert(OneOperator.SUB);
+        operators.insert(OneOperator.MUL);
+        operators.insert(OneOperator.DIV);
     }
+
+    /* ----------- Lexer -------------- */
 
     /**
      * Lexically analyzes a string given the context.
@@ -145,7 +175,7 @@ public class OneParser {
             // try and parse operators
             context.begin();
             int startIndex = context.index();
-            Operator operator = context.matchForward(operators);
+            OneOperator operator = context.matchForward(operators);
             if (operator == null) {
                 context.reset();
             } else {
@@ -170,6 +200,20 @@ public class OneParser {
         }
 
         return context;
+    }
+
+    /* ------------ Parser -------------- */
+
+    /**
+     * Parses an incoming sequence of tokens provided
+     * by the given context into an abstract syntax
+     * tree consisting of {@link ASTNode}s.
+     *
+     * @param context The context to parse in.
+     * @return The context back.
+     */
+    public ParseContext parse(ParseContext context) {
+        return context; // todo
     }
 
 }

@@ -10,7 +10,8 @@ import java.util.List;
 /**
  * A context for lexical analysis.
  *
- * Extends {@link StringReader} for convenience in usage.
+ * Extends {@link StringReader} for convenience in
+ * reading the source string.
  */
 public class LexContext extends StringReader {
 

@@ -49,6 +49,11 @@ public class Token<T> implements StringLocatable {
         return value;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T2> T2 getValueAs() {
+        return (T2) value;
+    }
+
     public Token<T> setType(TokenType<T> type) {
         this.type = type;
         return this;
