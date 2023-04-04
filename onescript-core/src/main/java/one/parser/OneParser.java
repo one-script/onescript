@@ -150,6 +150,35 @@ public class OneParser {
         while (context.hasNext()) {
             context.consumeWhitespace();
 
+            // match single line comment
+            if (context.curr() == '/' && context.peek(1) == '/') {
+                context.next();
+                while (context.next() != '\n');
+                continue;
+            }
+
+            // match multi-line comment
+            if (context.curr() == '/' && context.peek(1) == '*') {
+                context.next();
+                while (!context.pConsumeFullString("*/"))
+                    context.next();
+                context.next(2);
+                continue;
+            }
+
+            // match special characters
+            TokenType<?> tkType = switch (context.curr()) {
+                case '(' -> BuiltInTokenTypes.LEFT_PAREN;
+                case ')' -> BuiltInTokenTypes.RIGHT_PAREN;
+                default -> null;
+            };
+
+            if (tkType != null) {
+                context.addToken(tkType);
+                context.next();
+                continue;
+            }
+
             // match string literal
             if (context.curr() == '"') {
                 context.addToken(BuiltInTokenTypes.STRING_LITERAL.parseToken(context));

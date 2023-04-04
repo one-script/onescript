@@ -1,5 +1,6 @@
 package one.test.parser;
 
+import one.ast.NExpression;
 import one.parser.LexContext;
 import one.parser.OneParser;
 import one.parser.ParseContext;
@@ -12,7 +13,10 @@ public class BasicExpressionTest {
     void test_ParseBasicExpr() {
         final OneParser parser = new OneParser();
         final String src = """
-                6 + 8 * 2
+                // does it skip this?
+                /* hopefully
+                   it does */
+                (6 + -8) /* skip it */ * 2
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));
@@ -20,7 +24,9 @@ public class BasicExpressionTest {
                 Sequence.ofList(lexContext.getTokens()),
                 "expr"));
 
+        System.out.println(lexContext.getTokens());
         System.out.println(parseContext.getRootNode());
+        System.out.println(parseContext.getRootNode().<NExpression>as().evaluateSimple());
     }
 
 }

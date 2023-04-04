@@ -2,17 +2,18 @@ package one.ast;
 
 import one.lang.OneOperator;
 
+@SuppressWarnings("rawtypes")
 public class NBinaryOp extends NExpression {
 
     public NBinaryOp() { }
     public NBinaryOp(OneOperator operator, NExpression left, NExpression right) {
-        this.operator = operator;
+        this.operator = (OneOperator.Binary) operator;
         this.left = left;
         this.right = right;
     }
 
     /** The operator to apply. */
-    private OneOperator operator;
+    private OneOperator.Binary operator;
     /** The left operand. */
     private NExpression left;
     /** The right operand. */
@@ -33,7 +34,7 @@ public class NBinaryOp extends NExpression {
     }
 
     public NBinaryOp setOperator(OneOperator operator) {
-        this.operator = operator;
+        this.operator = (OneOperator.Binary) operator;
         return this;
     }
 
@@ -53,6 +54,11 @@ public class NBinaryOp extends NExpression {
     public NBinaryOp setRight(NExpression right) {
         this.right = right;
         return this;
+    }
+
+    @Override
+    public Object evaluateSimple() {
+        return operator.evaluateSimple(left.evaluateSimple(), right.evaluateSimple());
     }
 
 }

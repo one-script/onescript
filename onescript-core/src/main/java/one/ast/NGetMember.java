@@ -1,5 +1,6 @@
 package one.ast;
 
+@SuppressWarnings("rawtypes")
 public class NGetMember extends NExpression {
 
     /** The target value to index. */

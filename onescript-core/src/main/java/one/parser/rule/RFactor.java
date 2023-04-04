@@ -8,6 +8,7 @@ import one.parser.error.OneParseException;
 import one.parser.token.BuiltInTokenTypes;
 import one.parser.token.TokenType;
 
+@SuppressWarnings("rawtypes")
 public class RFactor extends ParserRule<NExpression> {
 
     public RFactor() {

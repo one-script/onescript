@@ -1,6 +1,6 @@
 package one.ast;
 
-public class NNumberConstant extends NExpression {
+public class NNumberConstant extends NExpression<Double> {
 
     /** The value. */
     private double value;
@@ -26,6 +26,11 @@ public class NNumberConstant extends NExpression {
     public NNumberConstant setValue(double value) {
         this.value = value;
         return this;
+    }
+
+    @Override
+    public Double evaluateSimple() {
+        return value;
     }
 
 }

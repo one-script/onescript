@@ -2,17 +2,18 @@ package one.ast;
 
 import one.lang.OneOperator;
 
+@SuppressWarnings("rawtypes")
 public class NUnaryOp extends NExpression {
 
     public NUnaryOp() { }
 
     public NUnaryOp(OneOperator operator, NExpression operand) {
-        this.operator = operator;
+        this.operator = (OneOperator.Unary) operator;
         this.operand = operand;
     }
 
     /** The operator to apply. */
-    private OneOperator operator;
+    private OneOperator.Unary operator;
     /** The operand to operate on. */
     private NExpression operand;
 
@@ -26,7 +27,7 @@ public class NUnaryOp extends NExpression {
     }
 
     public NUnaryOp setOperator(OneOperator operator) {
-        this.operator = operator;
+        this.operator = (OneOperator.Unary) operator;
         return this;
     }
 
@@ -37,6 +38,11 @@ public class NUnaryOp extends NExpression {
     public NUnaryOp setOperand(NExpression operand) {
         this.operand = operand;
         return this;
+    }
+
+    @Override
+    public Object evaluateSimple() {
+        return operator.evaluateSimple(operand.evaluateSimple());
     }
 
 }

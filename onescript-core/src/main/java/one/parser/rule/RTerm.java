@@ -4,9 +4,9 @@ import one.ast.NBinaryOp;
 import one.ast.NExpression;
 import one.lang.OneOperator;
 import one.parser.ParseContext;
-import one.parser.token.Token;
 import one.parser.token.TokenType;
 
+@SuppressWarnings("rawtypes")
 public class RTerm extends ParserRule<NExpression> {
 
     public RTerm() {

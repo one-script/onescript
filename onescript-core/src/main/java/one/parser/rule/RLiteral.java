@@ -13,6 +13,7 @@ import one.parser.token.Token;
  * Like this you have the ability to hook into only literals
  * and let factor do the rest of the processing.
  */
+@SuppressWarnings("rawtypes")
 public class RLiteral extends ParserRule<NExpression> {
 
     public RLiteral() {

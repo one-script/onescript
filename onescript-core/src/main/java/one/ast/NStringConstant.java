@@ -1,6 +1,6 @@
 package one.ast;
 
-public class NStringConstant extends NExpression {
+public class NStringConstant extends NExpression<String> {
 
     public NStringConstant() { }
 

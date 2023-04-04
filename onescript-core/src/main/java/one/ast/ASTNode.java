@@ -27,6 +27,11 @@ public abstract class ASTNode implements StringLocatable {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    public <N extends ASTNode> N as() {
+        return (N) this;
+    }
+
     @Override
     public ASTNode setLocation(StringLocation location) {
         this.stringLocation = location;

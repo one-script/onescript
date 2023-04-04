@@ -802,6 +802,28 @@ public class StringReader implements Iterable<Character> {
     }
 
     /**
+     * Peek-consumes the string inputted fully and returns true
+     * if present, otherwise fails and returns false.
+     *
+     * @param str The string to consume.
+     * @return If it was able to consume the full string.
+     */
+    public boolean pConsumeFullString(String str) {
+        final int l1 = str.length() - 1;
+        int start = index();
+        int i = 0;
+        while (str.charAt(i) == peekAt(start + i)) {
+            if (i == l1) {
+                return true;
+            }
+
+            i++;
+        }
+
+        return false;
+    }
+
+    /**
      * Uses the provided matcher to read a value
      * forwards in the stream.
      *
