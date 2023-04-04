@@ -8,23 +8,47 @@ import org.objectweb.asm.Type;
  */
 public abstract class OneType {
 
-    /** The Java primitive class.*/
-    private final Class<?> javaPrimitive;
-    /** The OW2 ASM type for this value type. */
-    private final Type asmType;
+    /**
+     * The internal name of this type.
+     */
+    private final String name;
 
-    protected OneType(Class<?> javaPrimitive,
-                      Type asmType) {
-        this.javaPrimitive = javaPrimitive;
-        this.asmType = asmType;
+    protected OneType(String name) {
+        this.name = name;
     }
 
-    public Class<?> getJavaPrimitive() {
-        return javaPrimitive;
+    public String getName() {
+        return name;
     }
 
-    public Type getAsmType() {
-        return asmType;
+    /**
+     * Get the loaded JVM class mirroring this value
+     * type if present, otherwise return null.
+     *
+     * @return The JVM class.
+     */
+    public abstract Class<?> getLoadedJVMClass();
+
+    /**
+     * Get the name of the JVM class, this should never
+     * return null as this does not require anything
+     * besides the descriptor to be loaded.
+     *
+     * @return The JVM class name.
+     */
+    public abstract String getJVMClassName();
+
+    /**
+     * Get the ObjectWeb ASM type mirror for
+     * this value type.
+     *
+     * @return The ASM type.
+     */
+    public abstract Type getASMType();
+
+    @Override
+    public String toString() {
+        return "OneType(" + getName() + ")";
     }
 
 }
