@@ -30,11 +30,13 @@ public class RLiteral extends ParserRule<NExpression> {
 
         // number literal //
         if (token.getType() == BuiltInTokenTypes.NUMBER_LITERAL) {
+            context.next();
             return new NNumberConstant(token.getValueAs());
         }
 
         // string literal //
         if (token.getType() == BuiltInTokenTypes.STRING_LITERAL) {
+            context.next();
             return new NStringConstant(token.getValueAs());
         }
 

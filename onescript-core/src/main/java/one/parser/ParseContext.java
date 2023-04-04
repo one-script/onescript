@@ -104,7 +104,7 @@ public class ParseContext extends SequenceReader<Token<?>> {
         // TODO: maybe cache the last successful parsers per tag
         //  and do some other shit for performance?
         ParserRule<?> bestRule = null;
-        int bestPriority = 0;
+        int bestPriority = Integer.MIN_VALUE;
         for (ParserRule<?> rule : parser.parserRuleList) {
             if (rule.getPriority() > bestPriority &&
                     rule.tagMatches(queryTag) &&

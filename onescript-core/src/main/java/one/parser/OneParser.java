@@ -3,11 +3,12 @@ package one.parser;
 import one.lang.OneOperator;
 import one.ast.ASTNode;
 import one.parser.error.OneParseException;
-import one.parser.rule.ParserRule;
+import one.parser.rule.*;
 import one.parser.token.*;
 import one.parser.util.OperatorRegistry;
 import one.parser.util.StringLocation;
 import one.parser.util.StringReader;
+import one.util.Sequence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,22 +51,22 @@ public class OneParser {
     /**
      * The registered parser rules by name.
      */
-    final Map<String, ParserRule> parserRuleMap = new HashMap<>();
-    final List<ParserRule> parserRuleList = new ArrayList<>();
+    final Map<String, ParserRule<?>> parserRuleMap = new HashMap<>();
+    final List<ParserRule<?>> parserRuleList = new ArrayList<>();
 
-    public OneParser addParserRule(ParserRule rule) {
+    public OneParser addParserRule(ParserRule<?> rule) {
         parserRuleMap.put(rule.getName(), rule);
         parserRuleList.add(rule);
         return this;
     }
 
-    public OneParser removeParserRule(ParserRule rule) {
+    public OneParser removeParserRule(ParserRule<?> rule) {
         parserRuleMap.remove(rule.getName());
         parserRuleList.remove(rule);;
         return this;
     }
 
-    public ParserRule getParserRule(String name) {
+    public ParserRule<?> getParserRule(String name) {
         return parserRuleMap.get(name);
     }
 
@@ -126,10 +127,15 @@ public class OneParser {
 
     /* Initialize Defaults */
     {
-        operators.insert(OneOperator.ADD);
-        operators.insert(OneOperator.SUB);
-        operators.insert(OneOperator.MUL);
-        operators.insert(OneOperator.DIV);
+        addOperator(OneOperator.ADD);
+        addOperator(OneOperator.SUB);
+        addOperator(OneOperator.MUL);
+        addOperator(OneOperator.DIV);
+
+        addParserRule(new RExpression());
+        addParserRule(new RTerm());
+        addParserRule(new RFactor());
+        addParserRule(new RLiteral());
     }
 
     /* ----------- Lexer -------------- */
@@ -213,7 +219,12 @@ public class OneParser {
      * @return The context back.
      */
     public ParseContext parse(ParseContext context) {
-        return context; // todo
+        ParserRule<?> rule = getParserRule(context.getRootParserRuleName());
+        if (rule == null)
+            throw new IllegalArgumentException("No parser rule by name '" + context.getRootParserRuleName() + "', " +
+                    "root rule is required");
+        context.setRootNode(rule.parseNode(context));
+        return context;
     }
 
 }

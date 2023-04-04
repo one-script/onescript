@@ -24,9 +24,9 @@ public class RFactor extends ParserRule<NExpression> {
         // check for prefix unary operators
         if (context.currentType() == TokenType.OPERATOR) {
             OneOperator currentOp = context.current().getValueAs();
-            OneOperator unaryOp = currentOp.toUnary();
+            OneOperator unaryOp = currentOp.toPrefixUnary();
             if (unaryOp == null)
-                throw context.endOrHere(new OneParseException("operator " + currentOp + " does not apply as a unary operator"));
+                throw context.endOrHere(new OneParseException("operator " + currentOp + " does not apply as a prefix unary operator"));
             context.next();
             // TODO: maybe do this through rules by calling ParseContext#tryParseNext
             //  once ive optimized that, as this is unintuitive for developers
@@ -41,10 +41,9 @@ public class RFactor extends ParserRule<NExpression> {
         NExpression value;
 
         // check for literal
-        value = context.tryParseNext("literal", NExpression.class);
+        if ((value = context.tryParseNext("literal", NExpression.class)) != null) {
 
-        // check for expression
-        if (context.currentType() == BuiltInTokenTypes.LEFT_PAREN) {
+        } else if /* check for expression */ (context.currentType() == BuiltInTokenTypes.LEFT_PAREN) {
             context.next();
             value = context.tryParseNext("exprExpr", NExpression.class);
             if (context.currentType() != BuiltInTokenTypes.RIGHT_PAREN)
@@ -55,14 +54,14 @@ public class RFactor extends ParserRule<NExpression> {
         // check for postfix unary operators
         if (context.currentType() == TokenType.OPERATOR) {
             OneOperator currentOp = context.current().getValueAs();
-            OneOperator unaryOp = currentOp.toUnary();
-            if (unaryOp == null)
-                throw context.endOrHere(new OneParseException("operator " + currentOp + " does not apply as a unary operator"));
-            context.next();
-            return new NUnaryOp(unaryOp, value);
-        } else {
-            return value;
+            OneOperator unaryOp = currentOp.toPostfixUnary();
+            if (unaryOp != null) {
+                context.next();
+                return new NUnaryOp(unaryOp, value);
+            }
         }
+
+        return value;
     }
 
 }

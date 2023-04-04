@@ -17,7 +17,7 @@ public class OneOperator {
     // Arithmetic
     public static final OneOperator NEG = new OneOperator("neg");
     public static final OneOperator ADD = new OneOperator("add", "+");
-    public static final OneOperator SUB = new OneOperator("sub", "-").withUnary(NEG);
+    public static final OneOperator SUB = new OneOperator("sub", "-").withPrefixUnary(NEG);
     public static final OneOperator MUL = new OneOperator("mul", "*");
     public static final OneOperator DIV = new OneOperator("div", "/");
 
@@ -31,8 +31,9 @@ public class OneOperator {
      */
     private final String[] aliases;
 
-    // the unary form of the operator
-    private OneOperator unaryForm;
+    // the unary forms of the operator
+    private OneOperator prefixUnaryForm;
+    private OneOperator postfixUnaryForm;
 
     /**
      * Create a new basic operator.
@@ -47,13 +48,22 @@ public class OneOperator {
         this.aliases = aliases;
     }
 
-    protected OneOperator withUnary(OneOperator operator) {
-        this.unaryForm = operator;
+    protected OneOperator withPrefixUnary(OneOperator operator) {
+        this.prefixUnaryForm = operator;
         return this;
     }
 
-    public OneOperator toUnary() {
-        return unaryForm;
+    public OneOperator withPostfixUnary(OneOperator operator) {
+        this.postfixUnaryForm = operator;
+        return this;
+    }
+
+    public OneOperator toPrefixUnary() {
+        return prefixUnaryForm;
+    }
+
+    public OneOperator toPostfixUnary() {
+        return postfixUnaryForm;
     }
 
     public String getName() {

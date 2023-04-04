@@ -23,10 +23,9 @@ public class RTerm extends ParserRule<NExpression> {
         // parse binary op //
         NExpression node = context.tryParseNext("exprFactor", NExpression.class);
         if (node != null) {
-            Token<?> currentToken;
             OneOperator currentOp = null;
-            while ((currentToken = context.current()).getType() == TokenType.OPERATOR &&
-                    (currentOp = currentToken.getValueAs()) == OneOperator.MUL ||
+            while (context.currentType() == TokenType.OPERATOR &&
+                    (currentOp = context.current().getValueAs()) == OneOperator.MUL ||
                     currentOp == OneOperator.DIV) {
                 context.next();
                 NExpression right = context.tryParseNext("exprFactor", NExpression.class);
