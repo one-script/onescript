@@ -29,7 +29,7 @@ public class ScriptClassLoader {
      * @return If it was successful.
      */
     public boolean loadScriptClass(OneClassType classType) {
-        return false; // TODO
+        throw new UnsupportedOperationException("TODO");
     }
 
 }

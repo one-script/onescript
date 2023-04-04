@@ -64,6 +64,20 @@ public class StringReader implements Iterable<Character> {
     public static final char END  = DONE;
     public static final char EOF  = DONE;
 
+    public interface ForwardMatcherProvider<T> {
+        ForwardMatcher<T> matcher();
+    }
+
+    public interface ForwardMatcher<T> {
+
+        /** Does the next character match? */
+        boolean next(StringReader reader);
+
+        /** Get the resulting object. */
+        T getResult();
+
+    }
+
     //////////////////////////////
 
     // the current index
@@ -157,6 +171,23 @@ public class StringReader implements Iterable<Character> {
      */
     public StringLocation end() {
         return new StringLocation(fileName, str, startIndices.pop(), index());
+    }
+
+    /**
+     * End the current segment if present and reset to
+     * the segments start position. If absent it will
+     * reset to index 0.
+     *
+     * @return This.
+     */
+    public StringReader reset() {
+        if (startIndices.size() != 0) {
+            index(startIndices.pop());
+        } else {
+            index(0);
+        }
+
+        return this;
     }
 
     /**
@@ -739,6 +770,64 @@ public class StringReader implements Iterable<Character> {
     }
 
     /* Parsing */
+
+    /**
+     * Consumes the string inputted fully and returns true
+     * if present, otherwise fails and returns false.
+     *
+     * Note that it does not reset back to the starting
+     * position automatically.
+     *
+     * It leaves the cursor of the reader at the first character
+     * encountered to not match the string when failed, or the
+     * character after the entire string if it succeeds.
+     *
+     * @param str The string to consume.
+     * @return If it was able to consume the full string.
+     */
+    public boolean consumeFullString(String str) {
+        final int l1 = str.length() - 1;
+        int i = 0;
+        while (str.charAt(i) == curr()) {
+            if (i == l1) {
+                next();
+                return true;
+            }
+
+            i++;
+            next();
+        }
+
+        return false;
+    }
+
+    /**
+     * Uses the provided matcher to read a value
+     * forwards in the stream.
+     *
+     * Note that it does not reset back to the starting
+     * position automatically.
+     *
+     * It leaves the cursor of the reader at the first character
+     * encountered to not match when failed, or the
+     * character after the entire match if it succeeds.
+     *
+     * @param matcher The matcher to use.
+     * @param <T> The result type.
+     * @return The result or null if it failed.
+     */
+    public <T> T matchForward(ForwardMatcher<T> matcher) {
+        prev();
+        while (matcher.next(this));
+        return matcher.getResult();
+    }
+
+    /**
+     * @see #matchForward(ForwardMatcher)
+     */
+    public <T> T matchForward(ForwardMatcherProvider<T> matcherProvider) {
+        return matchForward(matcherProvider.matcher());
+    }
 
     public int collectInt(final int radix) {
         boolean neg = false;

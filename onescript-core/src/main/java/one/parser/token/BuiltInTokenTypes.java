@@ -71,4 +71,12 @@ public class BuiltInTokenTypes {
         }
     };
 
+    /**
+     * An identifier.
+     *
+     * Can not be parsed directly because keywords are
+     * parsed in the same function.
+     */
+    public static TokenType<String> IDENTIFIER = TokenType.noParser("identifier");
+
 }

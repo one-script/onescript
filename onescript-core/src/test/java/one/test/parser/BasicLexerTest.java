@@ -26,7 +26,7 @@ public class BasicLexerTest {
     @Test
     void test_BuiltInTokens() {
         String src = """
-                "a"    "b" 4    "c"      6 "hhhhh ello"
+                "a"    "b" 4 +  - "c" b  b_t b$rrr b   6 "hhhhh ello      /"
                 """;
         System.out.println(doLex(src, null));
     }

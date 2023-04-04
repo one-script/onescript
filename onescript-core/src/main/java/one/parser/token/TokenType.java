@@ -1,5 +1,6 @@
 package one.parser.token;
 
+import one.lang.Operator;
 import one.parser.LexContext;
 import one.parser.util.RegexValueFactory;
 
@@ -47,6 +48,21 @@ public abstract class TokenType<T> implements TokenParser<T> {
                                               RegexValueFactory<T> valueFactory) {
         return regexBased(name, Pattern.compile(pattern, RegexTokenParser.DEFAULT_PATTERN_FLAGS), valueFactory);
     }
+
+    public static <T> TokenType<T> noParser(String name) {
+        return new TokenType<T>(name) {
+            @Override
+            public Token<T> parseToken(LexContext context) {
+                throw new UnsupportedOperationException("Token type is not directly parsable");
+            }
+        };
+    }
+
+    public static KeywordTokenType staticKeyword(String name) {
+        return new KeywordTokenType(name);
+    }
+
+    public static final TokenType<Operator> OPERATOR = noParser("operator");
 
     ////////////////////////////////////////////
 

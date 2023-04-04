@@ -1,0 +1,16 @@
+// = completed in code
+start with uppercase = internal
+
+[ TOKENS ]
+
+// identifierStart := [a-zA-Z] | $ | _
+// identifierChar  := identifierStart | [0-9]
+// identifier      := identifierStart & identifierChar+
+
+IntLiteral2  := digit2+
+IntLiteral8  := digit8+
+IntLiteral10 := digit10+
+IntLiteral16 := digit16+
+IntLiteral   := 0b(IntLiteral2) | 0o(IntLiteral8) | (IntLiteral10) | 0x(IntLiteral16)
+numberLiteral := (IntLiteral){.(IntLiteral10)} | (numberLiteral)E(IntLiteral)
+
