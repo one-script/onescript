@@ -1,6 +1,9 @@
 package one.type.cast;
 
 import one.type.OneType;
+import one.util.Throwables;
+import one.util.asm.JavaMethod;
+import one.util.asm.MethodBuilder;
 
 /**
  * Defines rules for casting between types.
@@ -47,6 +50,6 @@ public interface CastingRule {
      * @param sourceType The source type.
      * @param resultType The result type.
      */
-    void compileCast(/* TODO */ Object builder, OneType sourceType, OneType resultType);
+    void compileCast(MethodBuilder builder, OneType sourceType, OneType resultType);
 
 }

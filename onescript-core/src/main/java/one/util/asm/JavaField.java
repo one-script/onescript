@@ -1,6 +1,7 @@
 package one.util.asm;
 
 import one.util.Throwables;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.Field;
@@ -52,6 +53,24 @@ public class JavaField extends JavaMember {
 
     public Type getASMType() {
         return getAsmValueType();
+    }
+
+    /*
+        Codegen
+     */
+
+    public void putGetField(MethodBuilder builder) {
+        builder.getVisitor().visitFieldInsn(
+                Opcodes.GETFIELD, getInternalClassName(),
+                getName(), getASMType().getDescriptor()
+        );
+    }
+
+    public void putSetField(MethodBuilder builder) {
+        builder.getVisitor().visitFieldInsn(
+                Opcodes.PUTFIELD, getInternalClassName(),
+                getName(), getASMType().getDescriptor()
+        );
     }
 
 }

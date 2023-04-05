@@ -4,6 +4,7 @@ import one.util.Throwables;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -23,9 +24,25 @@ public class JavaMethod extends JavaMember {
         );
     }
 
+    public static JavaMethod of(Constructor<?> constructor) {
+        Class<?> dc = constructor.getDeclaringClass();
+        return new JavaMethod(
+                dc.getName(),
+                "<init>",
+                false,
+                dc.isInterface(),
+                Type.getType(constructor)
+        );
+    }
+
     public static JavaMethod ofAccessible(Method method) {
         method.setAccessible(true);
         return of(method);
+    }
+
+    public static JavaMethod ofAccessible(Constructor<?> constructor) {
+        constructor.setAccessible(true);
+        return of(constructor);
     }
 
     public static JavaMethod find(Class<?> klass, String name, Class<?>... paramTypes) {
@@ -40,6 +57,24 @@ public class JavaMethod extends JavaMember {
     public static JavaMethod findAccessible(Class<?> klass, String name, Class<?>... paramTypes) {
         try {
             return ofAccessible(klass.getDeclaredMethod(name, paramTypes));
+        } catch (Exception e) {
+            Throwables.sneakyThrow(e);
+            return null;
+        }
+    }
+
+    public static JavaMethod findConstructor(Class<?> klass, Class<?>... paramTypes) {
+        try {
+            return of(klass.getDeclaredConstructor(paramTypes));
+        } catch (Exception e) {
+            Throwables.sneakyThrow(e);
+            return null;
+        }
+    }
+
+    public static JavaMethod findAccessibleConstructor(Class<?> klass, Class<?>... paramTypes) {
+        try {
+            return ofAccessible(klass.getDeclaredConstructor(paramTypes));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
             return null;

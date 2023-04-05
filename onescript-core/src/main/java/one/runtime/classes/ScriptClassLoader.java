@@ -14,7 +14,7 @@ public class ScriptClassLoader {
     /** The host runtime. */
     private final OneRuntime runtime;
 
-    protected ScriptClassLoader(OneRuntime runtime) {
+    public ScriptClassLoader(OneRuntime runtime) {
         this.runtime = runtime;
     }
 
@@ -29,7 +29,7 @@ public class ScriptClassLoader {
      * @return If it was successful.
      */
     public boolean loadScriptClass(OneClassType classType) {
-        throw new UnsupportedOperationException("TODO");
+        throw new UnsupportedOperationException("TODO"); // todo
     }
 
 }
