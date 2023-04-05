@@ -1,5 +1,7 @@
 package one.runtime;
 
+import one.lang.OneMethod;
+import one.lang.OneSpecial;
 import one.parser.OneParser;
 import one.runtime.classes.ScriptClassLoader;
 import one.runtime.classes.ScriptClassRegistry;
@@ -9,6 +11,13 @@ import one.runtime.classes.OneJVMClassLoader;
  * The central class for the OneScript runtime.
  */
 public class OneRuntime {
+
+    @OneMethod
+    public static OneRuntime get(@OneSpecial OneRuntime runtime) {
+        return runtime;
+    }
+
+    /////////////////////////////////
 
     /**
      * The JVM OneScript class loader.

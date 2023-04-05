@@ -64,9 +64,9 @@ pub class MyPublicClass {
 	final val myInferredFinalField = "gg"; // the string type is inferred by the parser/compiler
 
 	/* New objects are created using ClassName(...) */
-    pub this(string strParam, any anyParam, inferredAnyParam) {
-    	this.myStringField = strParam;
-    	this.myAnyTypeFinalField  anyParam;
+	pub this(string strParam, any anyParam, inferredAnyParam) {
+		this.myStringField = strParam;
+		this.myAnyTypeFinalField  anyParam;
 	}
 
 	/* The colon (:) after keywords signals a type following */
@@ -125,14 +125,12 @@ parser.addTokenType(RegexTokenType("ctItemStack",
  */ 
 parser.addParserRule(
 	PipelineParserRule(/* rule name */ "ctItemStackToExpr", /* rule tag */ "expr", 1000)
-		.mustConsumeToken("ctItemStack")
-		.thenConsumeToken("ctItemStack")
-		.thenConvertTokensToNode(tokens -> {
+		.thenConsumeToken(tokens -> {
 			Token tk = tokens.first();
 
 			/* Types can assign getters and setters for
-             * fields, in this example `.value` actually
-             * calls `.getValue()` (Java method in this case). */
+			 * fields, in this example `.value` actually
+			 * calls `.getValue()` (Java method in this case). */
 			ItemStackDescriptor stackDesc = tk.value;
 
 			return NCall(/* The called value, not the type of the instance. */ 
@@ -140,19 +138,39 @@ parser.addParserRule(
 				         /* Parameters. */
 				         /* NExpr.thenGet(...) is the same as NGetMember(this, ...) */
 				         NCall(NTypeConstant.unresolvedString("minecraft.core.Registries").thenGet("ITEM").thenGet("get"),
-				         	NConstant.ofString(stackDesc.itemType.toString())),
-				         NConstant.ofInt(500)
-		})
-		/* Delegate to the expression node to allow expression processing. */
-		.thenDelegate()
+				         	NConstant.of(stackDesc.itemType.toString())),
+				         NConstant.of(500)
+		}, "ctItemStack")
 );
 ```
+A pseudo-code Java definition of this script loaded would be:
+```java
+a.b.c
+ - Script$MyScript
+ - MyClass
 
-## Script Loading
-Script loading happens in 3 major steps:
-- Parsing
-- Composition
-- Execution
+// Script$MyScript //
+public static void script$run(OneRuntime runtime) {
+    one.lang.OneSystem.println("Hello, World!");
+}
 
-### Parsing
-When 
+public static String hello(String name) {
+    return "Hello, " + name + "!";
+}
+
+// MyClass //
+class MyClass {
+    public static final MyClass INSTANCE;
+
+    public static MyClass get() {
+        return INSTANCE;
+    }
+
+    public String myField = "Hey Guys!";
+
+    public MyClass(String myField) {
+    	this.myField = myField;
+    }
+}
+
+```
