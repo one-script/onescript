@@ -1,6 +1,6 @@
 package one.type;
 
-import one.runtime.classes.OneClasses;
+import one.runtime.classes.ScriptClassDomain;
 import org.objectweb.asm.Type;
 
 /**
@@ -15,8 +15,6 @@ import org.objectweb.asm.Type;
  * are loaded to store information about the class for
  * compilation and early runtime purposes without having
  * to actually generate and load the class.
- *
- * @see OneClasses For a more detailed description of how classes work.
  */
 public class OneClassType extends OneType {
 
@@ -26,17 +24,25 @@ public class OneClassType extends OneType {
     private final String internalClassName;
 
     /**
+     * The class domain if this is a script class
+     */
+    private ScriptClassDomain scriptClassDomain;
+
+    /**
      * The JVM class instance once loaded.
      */
     private Class<?> loadedJvmClass;
 
     private final Type asmType;
 
-    public OneClassType(String internalClassName) {
+    public OneClassType(String internalClassName,
+                        String jvmClassName,
+                        ScriptClassDomain scriptClassDomain) {
         super(internalClassName);
 
         this.internalClassName = internalClassName;
-        this.jvmClassName = OneClasses.getJVMClassName(internalClassName);
+        this.jvmClassName = jvmClassName;
+        this.scriptClassDomain = scriptClassDomain;
 
         this.asmType = Type.getType("L" + jvmClassName + ";");
     }
@@ -58,8 +64,20 @@ public class OneClassType extends OneType {
     }
 
     @Override
-    public Type getASMType() {
+    public Type getAsmType() {
         return asmType;
+    }
+
+    public ScriptClassDomain getScriptClassDomain() {
+        return scriptClassDomain;
+    }
+
+    public boolean isScriptClass() {
+        return scriptClassDomain != null;
+    }
+
+    public boolean isNativeClass() {
+        return scriptClassDomain == null;
     }
 
 }

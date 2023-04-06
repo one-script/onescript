@@ -25,7 +25,7 @@ public class OneJVMClassLoader extends ClassLoader {
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
         // check if it is an OneScript class
-        if (name.startsWith(OneClasses.CLASSES_JVM_PACKAGE)) {
+        if (ScriptClassDomain.isScriptClass(name)) {
             Class<?> cl = loadScriptClass(name);
             if (cl != null)
                 return cl;
