@@ -1,6 +1,10 @@
 package one.type.primitive;
 
+import one.type.Any;
+import one.type.any.AnyBool;
+import one.type.any.AnyByte;
 import one.util.Placement;
+import one.util.asm.JavaMethod;
 
 import static one.type.cast.CastingRules.*;
 
@@ -8,7 +12,8 @@ import static one.type.cast.CastingRules.*;
 public class OneByteType extends OnePrimitiveType {
 
     public OneByteType() {
-        super("byte", Byte.TYPE);
+        super("byte", Byte.TYPE,
+                JavaMethod.find(AnyByte.class, "of", byte.class), JavaMethod.find(Any.class, "asByte"));
 
         // Casting Rules
         addCastingRule(Placement.first(), I2B);

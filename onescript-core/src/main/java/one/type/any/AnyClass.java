@@ -26,6 +26,10 @@ public class AnyClass implements Any {
     public static final JavaMethod CONSTRUCTOR = JavaMethod.findConstructor(AnyClass.class, Object.class, OneClassType.class);
     public static final JavaMethod METHOD_AS = JavaMethod.find(AnyClass.class, "as");
 
+    /*
+        TODO
+     */
+
     @Override
     public Any add(Any other) {
         return null;
@@ -77,7 +81,7 @@ public class AnyClass implements Any {
     }
 
     @Override
-    public Any memberCall(String name) {
+    public Any memberCall(String name, Any... args) {
         return null;
     }
 

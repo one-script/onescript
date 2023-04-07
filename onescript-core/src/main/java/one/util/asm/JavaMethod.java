@@ -142,6 +142,18 @@ public class JavaMethod extends JavaMember {
         Codegen
      */
 
+    public void putInvoke(MethodBuilder builder) {
+        if (isStatic()) putInvokeVirtual(builder);
+        else putInvokeStatic(builder);
+    }
+
+    public void putInvoke(MethodBuilder builder, boolean special) {
+        if (isStatic()) putInvokeSpecial(builder);
+        else
+            if (!special) putInvokeStatic(builder);
+            else putInvokeVirtual(builder);
+    }
+
     public void putInvokeVirtual(MethodBuilder builder) {
         int opcode = isInterfaceMethod() ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL;
         builder.getVisitor().visitMethodInsn(

@@ -17,7 +17,7 @@ public interface Any {
     Any indexSet(Any other);
     Any memberGet(String name);
     Any memberSet(String name);
-    Any memberCall(String name /* TODO: arguments */);
+    Any memberCall(String name, Any... args);
 
     /* Casting */
     boolean asBool();

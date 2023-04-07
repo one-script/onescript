@@ -1,6 +1,10 @@
 package one.type.primitive;
 
+import one.type.Any;
+import one.type.any.AnyByte;
+import one.type.any.AnyDouble;
 import one.util.Placement;
+import one.util.asm.JavaMethod;
 
 import static one.type.cast.CastingRules.*;
 
@@ -8,7 +12,8 @@ import static one.type.cast.CastingRules.*;
 public class OneDoubleType extends OnePrimitiveType {
 
     public OneDoubleType() {
-        super("double", Double.TYPE);
+        super("double", Double.TYPE,
+                JavaMethod.find(AnyDouble.class, "of", double.class), JavaMethod.find(Any.class, "asDouble"));
 
         // Casting Rules
         addCastingRule(Placement.first(), D2I);

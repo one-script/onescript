@@ -14,8 +14,7 @@ public class OneBoolType extends OnePrimitiveType {
 
     public OneBoolType() {
         super("boolean", Boolean.TYPE,
-                /* boolean has special Any handling */
-                null, JavaMethod.find(Any.class, "asBool"));
+                JavaMethod.find(AnyBool.class, "of", boolean.class), JavaMethod.find(Any.class, "asBool"));
 
         // Casting Rules
         addCastingRule(Placement.first(), I2B);
@@ -24,15 +23,6 @@ public class OneBoolType extends OnePrimitiveType {
         addCastingRule(Placement.first(), I2L);
         addCastingRule(Placement.first(), I2F);
         addCastingRule(Placement.first(), I2D);
-    }
-
-    @Override
-    public void compileToAny(MethodBuilder builder) {
-        builder.ifThen(Opcodes.IFNE);
-        AnyBool.TRUE_FIELD.putGetField(builder);
-        builder.elseThen();
-        AnyBool.FALSE_FIELD.putGetField(builder);
-        builder.endIf();
     }
 
 }

@@ -1,119 +1,113 @@
 package one.type.any;
 
 import one.type.Any;
-import one.type.OneClassType;
-import one.util.asm.JavaField;
-import one.util.asm.JavaMethod;
 
-public class AnyBool extends AnyBoxable {
+public class AnyInt extends AnyBoxable {
 
-    public static final AnyBool TRUE  = new AnyBool(true);
-    public static final AnyBool FALSE = new AnyBool(false);
-
-    public static AnyBool of(boolean b) {
-        return b ? TRUE : FALSE;
+    public static AnyInt of(int value) {
+        return new AnyInt(value);
     }
 
-    /** The value. */
-    private final boolean value;
-
-    AnyBool(boolean value) {
+    public AnyInt(int value) {
         this.value = value;
     }
 
+    /** The contained value. */
+    private final int value;
+
     @Override
     public Any add(Any other) {
-        return null;
+        return of(value + other.asInt());
     }
 
     @Override
     public Any sub(Any other) {
-        return null;
+        return of(value - other.asInt());
     }
 
     @Override
     public Any mul(Any other) {
-        return null;
+        return of(value * other.asInt());
     }
 
     @Override
     public Any div(Any other) {
-        return null;
+        return of(value / other.asInt());
     }
 
     @Override
     public Any shl(Any other) {
-        return null;
+        return of(value << other.asInt());
     }
 
     @Override
     public Any shr(Any other) {
-        return null;
+        return of(value >> other.asInt());
     }
 
     @Override
     public Any indexGet(Any other) {
-        return null;
+        throw new UnsupportedOperationException("Attempt to index int");
     }
 
     @Override
     public Any indexSet(Any other) {
-        return null;
+        throw new UnsupportedOperationException("Attempt to index int");
     }
 
     @Override
     public Any memberGet(String name) {
-        return null;
+        throw new UnsupportedOperationException("Attempt to index int");
     }
 
     @Override
     public Any memberSet(String name) {
-        return null;
+        throw new UnsupportedOperationException("Attempt to index int");
     }
 
     @Override
     public Any memberCall(String name, Any... args) {
-        return null;
+        throw new UnsupportedOperationException("Attempt to index int");
     }
 
     @Override
     public boolean asBool() {
-        return false;
+        return value == 1;
     }
 
     @Override
     public byte asByte() {
-        return (byte) (value ? 1 : 0);
+        return (byte) value;
     }
 
     @Override
     public char asChar() {
-        return value ? '1' : '0';
+        return (char) value;
     }
 
     @Override
     public short asShort() {
-        return (short) (value ? 1 : 0);
+        return (short) value;
     }
 
     @Override
     public int asInt() {
-        return value ? 1 : 0;
+        return value;
     }
 
     @Override
     public long asLong() {
-        return value ? 1 : 0;
+        return value;
     }
 
     @Override
     public float asFloat() {
-        return value ? 1 : 0;
+        return value;
     }
 
     @Override
     public double asDouble() {
-        return value ? 1 : 0;
+        return value;
     }
 
 }

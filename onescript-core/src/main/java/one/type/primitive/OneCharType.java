@@ -1,6 +1,10 @@
 package one.type.primitive;
 
+import one.type.Any;
+import one.type.any.AnyByte;
+import one.type.any.AnyChar;
 import one.util.Placement;
+import one.util.asm.JavaMethod;
 
 import static one.type.cast.CastingRules.*;
 
@@ -8,7 +12,8 @@ import static one.type.cast.CastingRules.*;
 public class OneCharType extends OnePrimitiveType {
 
     protected OneCharType() {
-        super("char", Character.TYPE);
+        super("char", Character.TYPE,
+                JavaMethod.find(AnyChar.class, "of", char.class), JavaMethod.find(Any.class, "asChar"));
 
         // Casting Rules
         addCastingRule(Placement.first(), I2B);
