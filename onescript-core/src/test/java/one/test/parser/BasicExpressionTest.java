@@ -16,7 +16,7 @@ public class BasicExpressionTest {
                 // does it skip this?
                 /* hopefully
                    it does */
-                (6 + -8) /* skip it */ * 2
+                2 /* skip it */ ** 8
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));

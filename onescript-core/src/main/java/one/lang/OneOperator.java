@@ -94,6 +94,10 @@ public class OneOperator {
             .<Double, Double, Double>withSimpleEvaluator((a, b) -> a * b);
     public static final Binary DIV = new Binary("div", "/")
             .<Double, Double, Double>withSimpleEvaluator((a, b) -> a / b);
+    public static final Binary MOD = new Binary("mod", "%")
+            .<Double, Double, Double>withSimpleEvaluator((a, b) -> a % b);
+    public static final Binary POW = new Binary("pow", "**")
+            .<Double, Double, Double>withSimpleEvaluator(Math::pow);
 
     //////////////////////////////////////////////
 

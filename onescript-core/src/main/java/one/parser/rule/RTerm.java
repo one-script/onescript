@@ -22,7 +22,7 @@ public class RTerm extends ParserRule<NExpression> {
     }
 
     /** Binary operator chain specification. */
-    static final BiOpSpec BI_OP_SPEC = new BiOpSpec(Set.of(OneOperator.MUL, OneOperator.DIV),
+    static final BiOpSpec BI_OP_SPEC = new BiOpSpec(Set.of(OneOperator.MUL, OneOperator.DIV, OneOperator.MOD),
             context -> context.tryParseNext("exprFactor"));
 
     @Override

@@ -131,10 +131,13 @@ public class OneParser {
         addOperator(OneOperator.SUB);
         addOperator(OneOperator.MUL);
         addOperator(OneOperator.DIV);
+        addOperator(OneOperator.MOD);
+        addOperator(OneOperator.POW);
 
         addParserRule(new RExpression());
         addParserRule(new RTerm());
         addParserRule(new RFactor());
+        addParserRule(new RBase());
         addParserRule(new RLiteral());
     }
 
