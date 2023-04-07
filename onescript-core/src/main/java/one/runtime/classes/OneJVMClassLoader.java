@@ -12,13 +12,13 @@ public class OneJVMClassLoader extends ClassLoader {
     /** The runtime object. */
     private final OneRuntime runtime;
 
-    private final ScriptClassRegistry scriptClassRegistry;
+    private final OneClassRegistry classRegistry;
     private final ScriptClassLoader scriptClassLoader;
 
     public OneJVMClassLoader(ClassLoader parent, OneRuntime runtime) {
         super(parent);
         this.runtime = runtime;
-        this.scriptClassRegistry = runtime.getScriptClassRegistry();
+        this.classRegistry = runtime.getClassRegistry();
         this.scriptClassLoader = runtime.getScriptClassLoader();
     }
 
@@ -47,19 +47,35 @@ public class OneJVMClassLoader extends ClassLoader {
      * @return The class.
      */
     private Class<?> loadScriptClass(String jvmName) throws ClassNotFoundException {
-        final OneClassType classType = scriptClassRegistry.forJVMName(jvmName);
+        final OneClassType classType = classRegistry.forJVMName(jvmName);
         if (classType == null) {
             return null;
+        }
+
+        Class<?> klass = classType.getLoadedJVMClass();
+        if (klass != null) {
+            return klass;
         }
 
         // TODO: write and here call some loader method
         //  in some other class OneClassLoader or something
         //  which will start the class loading chain
-        if (!scriptClassLoader.loadScriptClass(classType)) {
+        if (!scriptClassLoader.loadScriptClass(this, classType)) {
             return null;
         }
 
         return classType.getLoadedJVMClass();
+    }
+
+    /**
+     * Define a new class from the given bytes.
+     *
+     * @param name The name of the class.
+     * @param bytes The bytes.
+     * @return The class.
+     */
+    protected Class<?> defineFromBytes(String name, byte[] bytes) {
+        return defineClass(name, bytes, 0, bytes.length);
     }
 
 }

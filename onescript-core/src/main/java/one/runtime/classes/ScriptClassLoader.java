@@ -7,7 +7,7 @@ import one.type.OneClassType;
  * Responsible for compiling, loading and initializing
  * internal (OneScript) classes.
  *
- * @see ScriptClassRegistry
+ * @see OneClassRegistry
  */
 public class ScriptClassLoader {
 
@@ -28,7 +28,8 @@ public class ScriptClassLoader {
      * @param classType The script class type,
      * @return If it was successful.
      */
-    public boolean loadScriptClass(OneClassType classType) {
+    public boolean loadScriptClass(OneJVMClassLoader classLoader,
+                                   OneClassType classType) {
         throw new UnsupportedOperationException("TODO"); // todo
     }
 

@@ -10,12 +10,17 @@ import java.util.Map;
  * These are classes defined in OneScript scripts or other sources within
  * the OneScript runtime environment.
  */
-public class ScriptClassRegistry {
+public class OneClassRegistry {
 
     /**
      * All registered internal classes by their JVM name.
      */
     private final Map<String, OneClassType> byJVMName = new HashMap<>();
+
+    /**
+     * All registered script classes by their script name.
+     */
+    private final Map<String, OneClassType> byScriptName = new HashMap<>();
 
     /**
      * Registers a new class descriptor to the registry.
@@ -24,6 +29,7 @@ public class ScriptClassRegistry {
      */
     public void register(OneClassType descriptor) {
         byJVMName.put(descriptor.getJVMClassName(), descriptor);
+        byScriptName.put(descriptor.getClassName(), descriptor);
     }
 
     /**
@@ -35,6 +41,10 @@ public class ScriptClassRegistry {
      */
     public OneClassType forJVMName(String name) {
         return byJVMName.get(name);
+    }
+
+    public OneClassType forScriptName(String name) {
+        return byScriptName.get(name);
     }
 
 }

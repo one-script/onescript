@@ -9,7 +9,7 @@ import one.parser.ParseContext;
 import one.runtime.classes.NativeClassProvider;
 import one.runtime.classes.OneJVMClassLoader;
 import one.runtime.classes.ScriptClassLoader;
-import one.runtime.classes.ScriptClassRegistry;
+import one.runtime.classes.OneClassRegistry;
 import one.util.Sequence;
 
 /**
@@ -38,7 +38,7 @@ public class OneRuntime {
     /**
      * The class pool of loaded and unloaded script classes.
      */
-    private final ScriptClassRegistry scriptClassRegistry = new ScriptClassRegistry();
+    private final OneClassRegistry classRegistry = new OneClassRegistry();
 
     /**
      * The system/main script class loader.
@@ -61,8 +61,8 @@ public class OneRuntime {
         return jvmClassLoader;
     }
 
-    public ScriptClassRegistry getScriptClassRegistry() {
-        return scriptClassRegistry;
+    public OneClassRegistry getClassRegistry() {
+        return classRegistry;
     }
 
     public ScriptClassLoader getScriptClassLoader() {
