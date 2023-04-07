@@ -1,12 +1,13 @@
 package one.type.primitive;
 
+import one.type.OneStrongType;
 import one.type.OneType;
 import org.objectweb.asm.Type;
 
 /**
  * Denotes a primitive OneScript type.
  */
-public abstract class OnePrimitiveType extends OneType {
+public abstract class OnePrimitiveType extends OneStrongType {
 
     /** The Java primitive class. */
     private final Class<?> klass;

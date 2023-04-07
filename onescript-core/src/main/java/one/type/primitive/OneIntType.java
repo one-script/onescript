@@ -2,7 +2,7 @@ package one.type.primitive;
 
 import one.util.Placement;
 
-import static one.type.cast.PrimitiveCastingRules.*;
+import static one.type.cast.CastingRules.*;
 
 /** Integer primitive type. */
 public class OneIntType extends OnePrimitiveType {

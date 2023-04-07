@@ -4,6 +4,9 @@ import one.util.Throwables;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -89,6 +92,8 @@ public class JavaMethod extends JavaMember {
     /** If it is an interface method. */
     private final boolean isItf;
 
+    private MethodHandle methodHandle;
+
     public JavaMethod(String className, String name, boolean isStatic, boolean isItf, Type methodType) {
         super(className, name, isStatic, methodType.getReturnType());
         this.isItf = isItf;
@@ -105,6 +110,27 @@ public class JavaMethod extends JavaMember {
 
     public Type getAsmReturnType() {
         return getAsmValueType();
+    }
+
+    /**
+     * Find a method handle for this given method.
+     *
+     * @return The method handle.
+     */
+    public MethodHandle asMethodHandle() {
+        try {
+            if (methodHandle == null) {
+                if (isStatic()) methodHandle = MethodHandles.lookup()
+                        .findStatic(getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
+                else methodHandle = MethodHandles.lookup()
+                        .findVirtual(getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
+            }
+
+            return methodHandle;
+        } catch (Exception e) {
+            Throwables.sneakyThrow(e);
+            return null;
+        }
     }
 
     /*

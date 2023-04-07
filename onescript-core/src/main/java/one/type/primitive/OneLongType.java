@@ -2,7 +2,7 @@ package one.type.primitive;
 
 import one.util.Placement;
 
-import static one.type.cast.PrimitiveCastingRules.*;
+import static one.type.cast.CastingRules.*;
 
 /** Long primitive type. */
 public class OneLongType extends OnePrimitiveType {

@@ -15,8 +15,10 @@ import org.objectweb.asm.Type;
  * are loaded to store information about the class for
  * compilation and early runtime purposes without having
  * to actually generate and load the class.
+ *
+ * @param <V> The value type.
  */
-public class OneClassType extends OneType {
+public class OneClassType<V> extends OneStrongType {
 
     /** The name of the JVM class. */
     private final String jvmClassName;
