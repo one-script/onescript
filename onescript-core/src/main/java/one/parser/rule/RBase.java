@@ -1,13 +1,12 @@
 package one.parser.rule;
 
-import one.ast.NBinaryOp;
 import one.ast.NConstant;
 import one.ast.NExpression;
 import one.ast.NUnaryOp;
 import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.error.OneParseException;
-import one.parser.token.BuiltInTokenTypes;
+import one.parser.token.Tokens;
 import one.parser.token.TokenType;
 
 @SuppressWarnings("rawtypes")
@@ -54,10 +53,10 @@ public class RBase extends ParserRule<NExpression> {
         // check for literal
         if ((value = context.tryParseNext("literal", NExpression.class)) != null) {
 
-        } else if /* check for expression */ (context.currentType() == BuiltInTokenTypes.LEFT_PAREN) {
+        } else if /* check for expression */ (context.currentType() == Tokens.LEFT_PAREN) {
             context.next();
             value = context.tryParseNext("exprExpr", NExpression.class);
-            if (context.currentType() != BuiltInTokenTypes.RIGHT_PAREN)
+            if (context.currentType() != Tokens.RIGHT_PAREN)
                 throw context.endOrHere(new OneParseException("expected right parenthesis to close expression"));
             context.next();
         }

@@ -2,9 +2,9 @@ package one.parser.token;
 
 import one.parser.LexContext;
 
-public class KeywordTokenType extends TokenType<Void> {
+public class Keyword extends TokenType<Void> {
 
-    public KeywordTokenType(String name) {
+    public Keyword(String name) {
         super(name);
     }
 

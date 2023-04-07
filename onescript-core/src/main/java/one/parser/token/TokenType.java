@@ -58,8 +58,8 @@ public abstract class TokenType<T> implements TokenParser<T> {
         };
     }
 
-    public static KeywordTokenType staticKeyword(String name) {
-        return new KeywordTokenType(name);
+    public static Keyword staticKeyword(String name) {
+        return new Keyword(name);
     }
 
     public static TokenType<Void> oneChar(String name, char c) {

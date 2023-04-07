@@ -6,7 +6,6 @@ import org.objectweb.asm.Type;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -19,7 +18,7 @@ public class JavaMethod extends JavaMember {
     public static JavaMethod of(Method method) {
         Class<?> dc = method.getDeclaringClass();
         return new JavaMethod(
-                dc.getName(),
+                JavaClass.of(dc),
                 method.getName(),
                 Modifier.isStatic(method.getModifiers()),
                 dc.isInterface(),
@@ -30,7 +29,7 @@ public class JavaMethod extends JavaMember {
     public static JavaMethod of(Constructor<?> constructor) {
         Class<?> dc = constructor.getDeclaringClass();
         return new JavaMethod(
-                dc.getName(),
+                JavaClass.of(dc),
                 "<init>",
                 false,
                 dc.isInterface(),
@@ -53,7 +52,7 @@ public class JavaMethod extends JavaMember {
             return of(klass.getDeclaredMethod(name, paramTypes));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
@@ -62,7 +61,7 @@ public class JavaMethod extends JavaMember {
             return ofAccessible(klass.getDeclaredMethod(name, paramTypes));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
@@ -71,7 +70,7 @@ public class JavaMethod extends JavaMember {
             return of(klass.getDeclaredConstructor(paramTypes));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
@@ -80,7 +79,7 @@ public class JavaMethod extends JavaMember {
             return ofAccessible(klass.getDeclaredConstructor(paramTypes));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
@@ -92,10 +91,11 @@ public class JavaMethod extends JavaMember {
     /** If it is an interface method. */
     private final boolean isItf;
 
+    private Method method;
     private MethodHandle methodHandle;
 
-    public JavaMethod(String className, String name, boolean isStatic, boolean isItf, Type methodType) {
-        super(className, name, isStatic, methodType.getReturnType());
+    public JavaMethod(JavaClass declaringClass, String name, boolean isStatic, boolean isItf, Type methodType) {
+        super(declaringClass, name, isStatic, methodType.getReturnType());
         this.isItf = isItf;
         this.asmType = methodType;
     }
@@ -112,6 +112,11 @@ public class JavaMethod extends JavaMember {
         return getAsmValueType();
     }
 
+    public Method asMethod() {
+        // TODO: get method from loaded class if null
+        return method;
+    }
+
     /**
      * Find a method handle for this given method.
      *
@@ -121,9 +126,9 @@ public class JavaMethod extends JavaMember {
         try {
             if (methodHandle == null) {
                 if (isStatic()) methodHandle = MethodHandles.lookup()
-                        .findStatic(getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
+                        .findStatic(getDeclaringClass().getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
                 else methodHandle = MethodHandles.lookup()
-                        .findVirtual(getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
+                        .findVirtual(getDeclaringClass().getLoadedClass(), getName(), ASMUtil.getMethodType(asmType));
             }
 
             return methodHandle;
@@ -140,21 +145,21 @@ public class JavaMethod extends JavaMember {
     public void putInvokeVirtual(MethodBuilder builder) {
         int opcode = isInterfaceMethod() ? Opcodes.INVOKEINTERFACE : Opcodes.INVOKEVIRTUAL;
         builder.getVisitor().visitMethodInsn(
-                opcode, getInternalClassName(), getName(),
+                opcode, getDeclaringClass().getInternalName(), getName(),
                 asmType.getDescriptor(), isInterfaceMethod()
         );
     }
 
     public void putInvokeStatic(MethodBuilder builder) {
         builder.getVisitor().visitMethodInsn(
-                Opcodes.INVOKESTATIC, getInternalClassName(), getName(),
+                Opcodes.INVOKESTATIC, getDeclaringClass().getInternalName(), getName(),
                 asmType.getDescriptor(), isInterfaceMethod()
         );
     }
 
     public void putInvokeSpecial(MethodBuilder builder) {
         builder.getVisitor().visitMethodInsn(
-                Opcodes.INVOKESPECIAL, getInternalClassName(), getName(),
+                Opcodes.INVOKESPECIAL, getDeclaringClass().getInternalName(), getName(),
                 asmType.getDescriptor(), isInterfaceMethod()
         );
     }

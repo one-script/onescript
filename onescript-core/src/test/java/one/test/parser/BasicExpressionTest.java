@@ -13,10 +13,7 @@ public class BasicExpressionTest {
     void test_ParseBasicExpr() {
         final OneParser parser = new OneParser();
         final String src = """
-                // does it skip this?
-                /* hopefully
-                   it does */
-                2 /* skip it */ ** 8
+                let myVar = "Hello, World!";
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));

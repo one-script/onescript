@@ -8,7 +8,6 @@ import one.parser.token.*;
 import one.parser.util.OperatorRegistry;
 import one.parser.util.StringLocation;
 import one.parser.util.StringReader;
-import one.util.Sequence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +40,7 @@ public class OneParser {
     /**
      * All registered keyword types.
      */
-    final Map<String, KeywordTokenType> keywordTypes = new HashMap<>();
+    final Map<String, Keyword> keywordTypes = new HashMap<>();
 
     /**
      * The registered operators.
@@ -97,17 +96,17 @@ public class OneParser {
         return this;
     }
 
-    public OneParser addKeywordType(KeywordTokenType type) {
+    public OneParser addKeywordType(Keyword type) {
         keywordTypes.put(type.getName(), type);
         return this;
     }
 
-    public OneParser removeKeywordType(KeywordTokenType type) {
+    public OneParser removeKeywordType(Keyword type) {
         keywordTypes.remove(type.getName());
         return this;
     }
 
-    public KeywordTokenType getKeywordType(String name) {
+    public Keyword getKeywordType(String name) {
         return keywordTypes.get(name);
     }
 
@@ -139,6 +138,8 @@ public class OneParser {
         addParserRule(new RFactor());
         addParserRule(new RBase());
         addParserRule(new RLiteral());
+
+        Tokens.registerAllKeywords(this);
     }
 
     /* ----------- Lexer -------------- */
@@ -171,8 +172,10 @@ public class OneParser {
 
             // match special characters
             TokenType<?> tkType = switch (context.curr()) {
-                case '(' -> BuiltInTokenTypes.LEFT_PAREN;
-                case ')' -> BuiltInTokenTypes.RIGHT_PAREN;
+                case '(' -> Tokens.LEFT_PAREN;
+                case ')' -> Tokens.RIGHT_PAREN;
+                case ';' -> Tokens.SEMICOLON;
+                case ':' -> Tokens.COLON;
                 default -> null;
             };
 
@@ -184,7 +187,7 @@ public class OneParser {
 
             // match string literal
             if (context.curr() == '"') {
-                context.addToken(BuiltInTokenTypes.STRING_LITERAL.parseToken(context));
+                context.addToken(Tokens.STRING_LITERAL.parseToken(context));
                 continue;
             }
 
@@ -192,7 +195,7 @@ public class OneParser {
             // we can match in radix 10 because other bases
             // will start with 0cNUMBER, and 0 is a base-10 digit
             if (StringReader.isDigit(context.curr(), 10)) {
-                context.addToken(BuiltInTokenTypes.NUMBER_LITERAL.parseToken(context));
+                context.addToken(Tokens.NUMBER_LITERAL.parseToken(context));
                 continue;
             }
 
@@ -203,8 +206,8 @@ public class OneParser {
                 String id = context.collect(OneParser::isValidIdentifierChar);
                 int endIndex = context.index() - 1;
                 Token<?> token;
-                KeywordTokenType kw = getKeywordType(id);
-                token = kw != null ? new Token<>(kw) : new Token<>(BuiltInTokenTypes.IDENTIFIER, id);
+                Keyword kw = getKeywordType(id);
+                token = kw != null ? new Token<>(kw) : new Token<>(Tokens.IDENTIFIER, id);
                 context.addToken(token
                         .setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex)));
                 continue;

@@ -22,7 +22,7 @@ public abstract class OneStrongType extends OneType {
      *
      * @param builder The method bytecode builder.
      */
-    public void putToAny(MethodBuilder builder) {
+    public void compileToAny(MethodBuilder builder) {
         throw new UnsupportedOperationException("Type " + getName() + " can not be cast to an any value: Not implemented");
     }
 
@@ -31,7 +31,7 @@ public abstract class OneStrongType extends OneType {
      *
      * @param builder The method bytecode builder.
      */
-    public void putFromAny(MethodBuilder builder) {
+    public void compileFromAny(MethodBuilder builder) {
         throw new UnsupportedOperationException("Type " + getName() + " can not be cast from an any value: Not implemented");
     }
 

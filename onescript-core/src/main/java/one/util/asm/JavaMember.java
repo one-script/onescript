@@ -10,9 +10,8 @@ import org.objectweb.asm.Type;
  */
 public abstract class JavaMember {
 
-    /** The name of the containing class. */
-    private final String className;
-    private final String internalClassName;
+    /** The declaring class. */
+    private final JavaClass declaringClass;
 
     /** The name of this member. */
     private final String name;
@@ -27,23 +26,15 @@ public abstract class JavaMember {
      */
     private final Type asmValueType;
 
-    // cache for the loaded class
-    private Class<?> loadedClass;
-
-    protected JavaMember(String className, String name, boolean isStatic, Type asmValueType) {
-        this.className = className;
-        this.internalClassName = JavaClasses.toInternal(className);
+    protected JavaMember(JavaClass declaringClass, String name, boolean isStatic, Type asmValueType) {
+        this.declaringClass = declaringClass;
         this.name = name;
         this.isStatic = isStatic;
         this.asmValueType = asmValueType;
     }
 
-    public String getClassName() {
-        return className;
-    }
-
-    public String getInternalClassName() {
-        return internalClassName;
+    public JavaClass getDeclaringClass() {
+        return declaringClass;
     }
 
     public String getName() {
@@ -56,18 +47,6 @@ public abstract class JavaMember {
 
     public Type getAsmValueType() {
         return asmValueType;
-    }
-
-    public Class<?> getLoadedClass() {
-        if (loadedClass == null) {
-            try {
-                loadedClass = Class.forName(className);
-            } catch (Exception e) {
-                Throwables.sneakyThrow(e);
-            }
-        }
-
-        return loadedClass;
     }
 
 }

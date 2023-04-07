@@ -4,6 +4,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
 
+import java.util.Stack;
+
 import static org.objectweb.asm.Opcodes.*;
 
 /** Wrapper for ASM {@link MethodVisitor} to make it a bit easier. */
@@ -14,6 +16,16 @@ public class MethodBuilder {
 
     /** Counter for local variables. */
     private int localVarPos = 0;
+
+    static class IfDecl {
+        Label thenLabel;
+        Label elseLabel;
+        Label endLabel;
+        boolean hasElse;
+    }
+
+    /** Stack for if utility. */
+    private final Stack<IfDecl> ifStack = new Stack<>();
 
     public MethodBuilder(MethodVisitor visitor) {
         this.visitor = visitor;
@@ -29,6 +41,10 @@ public class MethodBuilder {
 
     public Label labelHere() {
         Label label = new Label();
+        return labelHere(label);
+    }
+
+    public Label labelHere(Label label) {
         visitor.visitLabel(label);
         return label;
     }
@@ -45,6 +61,52 @@ public class MethodBuilder {
 
     public void releaseLocal(Type type) {
         localVarPos -= type.getSize();
+    }
+
+    /*
+        If Declarations
+
+        Structure of if-statements in code:
+
+        jmp to :then if condition met
+        goto :else // skipped by jmp if condition is met
+     then:
+        ...
+        goto :end
+     else: // exists if an else is created, otherwise points to end
+        ...
+     end:
+        ...
+
+     */
+
+    public void ifThen(int instruction) {
+        IfDecl i = new IfDecl();
+        i.thenLabel = new Label();
+        i.elseLabel = new Label();
+        i.endLabel  = new Label();
+        visitor.visitJumpInsn(instruction, i.thenLabel);
+        visitor.visitJumpInsn(GOTO, i.elseLabel); // else instruction
+        labelHere(i.thenLabel);
+    }
+
+    public void elseThen() {
+        IfDecl i = ifStack.peek();
+        // must be after then, add
+        // instruction to jump to end
+        visitor.visitJumpInsn(GOTO, i.endLabel);
+
+        i.hasElse = true;
+        labelHere(i.elseLabel);
+    }
+
+    public void endIf() {
+        IfDecl i = ifStack.pop();
+
+        labelHere(i.endLabel);
+        if (!i.hasElse) {
+            labelHere(i.elseLabel);
+        }
     }
 
     /*
@@ -139,8 +201,9 @@ public class MethodBuilder {
     public void tShr(Type type) { visitor.visitInsn(type.getOpcode(ISHR)); }
 
     // Object Operations //
-    public void anew(Type type)   { visitor.visitTypeInsn(NEW, type.getInternalName()); }
-    public void anew(String name) { visitor.visitTypeInsn(NEW, name); }
+    public void newInstance(Type type)      { visitor.visitTypeInsn(NEW, type.getInternalName()); }
+    public void newInstance(String name)    { visitor.visitTypeInsn(NEW, name); }
+    public void newInstance(JavaClass type) { visitor.visitTypeInsn(NEW, type.getInternalName());}
 
     // Array Operations //
     public void newArray(Type type) {
@@ -188,5 +251,14 @@ public class MethodBuilder {
     public void dStore() { visitor.visitInsn(DSTORE); }
     public void aStore() { visitor.visitInsn(ASTORE); }
     public void tStore(Type type) { visitor.visitInsn(type.getOpcode(ISTORE)); }
+
+    // Stack Operations //
+    public void dup()    { visitor.visitInsn(DUP); }
+    public void dup2()   { visitor.visitInsn(DUP2); }
+    public void dupX1()  { visitor.visitInsn(DUP_X1); }
+    public void dupX2()  { visitor.visitInsn(DUP_X2); }
+    public void dup2X1() { visitor.visitInsn(DUP2_X1); }
+    public void dup2X2() { visitor.visitInsn(DUP2_X2); }
+    public void swap()   { visitor.visitInsn(SWAP); }
 
 }

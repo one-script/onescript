@@ -1,6 +1,8 @@
 package one.type;
 
 import one.runtime.classes.ScriptClassDomain;
+import one.type.any.AnyClass;
+import one.util.asm.MethodBuilder;
 import org.objectweb.asm.Type;
 
 /**
@@ -35,16 +37,28 @@ public class OneClassType<V> extends OneStrongType {
      */
     private Class<?> loadedJvmClass;
 
+    /**
+     * The ASM class type representing this class.
+     */
     private final Type asmType;
+
+    /**
+     * If the JVM class for this class type implements
+     * {@link Any}. This allows faster back and forth
+     * casting as no work is required.
+     */
+    private final boolean implementsAny;
 
     public OneClassType(String internalClassName,
                         String jvmClassName,
-                        ScriptClassDomain scriptClassDomain) {
+                        ScriptClassDomain scriptClassDomain,
+                        boolean implementsAny) {
         super(internalClassName);
 
         this.internalClassName = internalClassName;
         this.jvmClassName = jvmClassName;
         this.scriptClassDomain = scriptClassDomain;
+        this.implementsAny = implementsAny;
 
         this.asmType = Type.getType("L" + jvmClassName + ";");
     }
@@ -80,6 +94,52 @@ public class OneClassType<V> extends OneStrongType {
 
     public boolean isNativeClass() {
         return scriptClassDomain == null;
+    }
+
+    /**
+     * Get if the JVM class for this class type implements
+     * {@link Any}. This allows faster back and forth
+     * casting as no work is required.
+     */
+    public boolean implementsAny() {
+        return implementsAny;
+    }
+
+    /*
+        Compilation
+     */
+
+    @Override
+    public void compileToAny(MethodBuilder builder) {
+        if (!implementsAny) {
+                                                            // stack: value
+            builder.newInstance(AnyClass.CLASS);            // stack: value instance
+            builder.dupX1();                                // stack: instance value instance
+            builder.swap();                                 // stack: instance instance value
+            /* todo: obtain instance of this class type */  // stack: instance instance value type
+            builder.constNull();
+            AnyClass.CONSTRUCTOR.putInvokeSpecial(builder); // stack: instance
+        }
+
+        // if the class implements the Any interface
+        // the value on top of the stack would already
+        // inherit from Any which means no work has to
+        // be done and no new instances have to be created
+        // to cast it
+    }
+
+    @Override
+    public void compileFromAny(MethodBuilder builder) {
+        if (!implementsAny) {
+                                                          // stack: instance
+            AnyClass.METHOD_AS.putInvokeVirtual(builder); // stack: value
+        }
+
+        // if the class implements the Any interface
+        // the value on top of the stack would already
+        // inherit from Any which means no work has to
+        // be done and no new instances have to be created
+        // to cast it
     }
 
 }

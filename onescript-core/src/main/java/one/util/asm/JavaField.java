@@ -15,7 +15,7 @@ public class JavaField extends JavaMember {
 
     public static JavaField of(Field field) {
         return new JavaField(
-                field.getDeclaringClass().getName(),
+                JavaClass.of(field.getDeclaringClass()),
                 field.getName(),
                 Modifier.isStatic(field.getModifiers()),
                 Type.getType(field.getType())
@@ -32,7 +32,7 @@ public class JavaField extends JavaMember {
             return of(klass.getDeclaredField(name));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
@@ -41,14 +41,14 @@ public class JavaField extends JavaMember {
             return ofAccessible(klass.getDeclaredField(name));
         } catch (Exception e) {
             Throwables.sneakyThrow(e);
-            return null;
+            throw new AssertionError();
         }
     }
 
     ////////////////////////////////////////
 
-    public JavaField(String className, String name, boolean isStatic, Type type) {
-        super(className, name, isStatic, type);
+    public JavaField(JavaClass declaringClass, String name, boolean isStatic, Type type) {
+        super(declaringClass, name, isStatic, type);
     }
 
     public Type getASMType() {
@@ -60,15 +60,17 @@ public class JavaField extends JavaMember {
      */
 
     public void putGetField(MethodBuilder builder) {
+        int opcode = isStatic() ? Opcodes.GETSTATIC : Opcodes.GETFIELD;
         builder.getVisitor().visitFieldInsn(
-                Opcodes.GETFIELD, getInternalClassName(),
+                opcode, getDeclaringClass().getInternalName(),
                 getName(), getASMType().getDescriptor()
         );
     }
 
     public void putSetField(MethodBuilder builder) {
+        int opcode = isStatic() ? Opcodes.PUTSTATIC : Opcodes.PUTFIELD;
         builder.getVisitor().visitFieldInsn(
-                Opcodes.PUTFIELD, getInternalClassName(),
+                opcode, getDeclaringClass().getInternalName(),
                 getName(), getASMType().getDescriptor()
         );
     }

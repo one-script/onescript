@@ -1,10 +1,9 @@
 package one.type.cast;
 
 import one.type.*;
-import one.util.asm.JavaMethod;
 import one.util.asm.MethodBuilder;
+import org.objectweb.asm.Opcodes;
 
-import java.lang.invoke.MethodHandle;
 import java.util.function.Consumer;
 
 import static one.type.OneTypes.*;
@@ -42,13 +41,33 @@ public final class CastingRules {
     public static final CastingRule FROM_ANY = new CastingRule() {
         @Override public boolean canCast(OneType sourceType, OneType resultType) { return sourceType == ANY && resultType instanceof OneStrongType; }
         @Override public boolean canCastImplicit(OneType sourceType, OneType resultType) { return canCast(sourceType, resultType); }
-        @Override public void compileCast(MethodBuilder builder, OneType sourceType, OneType resultType) { ((OneStrongType)resultType).putFromAny(builder); }
+        @Override
+        public void compileCast(MethodBuilder builder, OneType sourceType, OneType resultType) {
+            // if the value is not null, cast it,
+            // replacing the value on the stack.
+            // if the value is null we dont have any
+            // work to do because null : any -> type = null
+            builder.ifThen(Opcodes.IFNONNULL);
+            // compile cast
+            ((OneStrongType)resultType).compileFromAny(builder);
+            builder.endIf();
+        }
     };
 
     public static final CastingRule TO_ANY = new CastingRule() {
         @Override public boolean canCast(OneType sourceType, OneType resultType) { return sourceType instanceof OneStrongType && resultType == ANY; }
         @Override public boolean canCastImplicit(OneType sourceType, OneType resultType) { return canCast(sourceType, resultType); }
-        @Override public void compileCast(MethodBuilder builder, OneType sourceType, OneType resultType) { ((OneStrongType)sourceType).putToAny(builder); };
+        @Override
+        public void compileCast(MethodBuilder builder, OneType sourceType, OneType resultType) {
+            // if the value is not null, cast it,
+            // replacing the value on the stack.
+            // if the value is null we dont have any
+            // work to do because null -> any = null
+            builder.ifThen(Opcodes.IFNONNULL);
+            // compile cast
+            ((OneStrongType)resultType).compileToAny(builder);
+            builder.endIf();
+        };
     };
 
     public static final CastingRule D2I = makePrimitive(true, DOUBLE, INT, MethodBuilder::d2i, false);

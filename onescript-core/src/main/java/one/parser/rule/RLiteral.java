@@ -5,7 +5,7 @@ import one.ast.NNumberConstant;
 import one.ast.NStringConstant;
 import one.parser.ParseContext;
 import one.parser.error.OneParseException;
-import one.parser.token.BuiltInTokenTypes;
+import one.parser.token.Tokens;
 import one.parser.token.Token;
 
 /**
@@ -30,13 +30,13 @@ public class RLiteral extends ParserRule<NExpression> {
         Token<?> token = context.current();
 
         // number literal //
-        if (token.getType() == BuiltInTokenTypes.NUMBER_LITERAL) {
+        if (token.getType() == Tokens.NUMBER_LITERAL) {
             context.next();
             return new NNumberConstant(token.getValueAs());
         }
 
         // string literal //
-        if (token.getType() == BuiltInTokenTypes.STRING_LITERAL) {
+        if (token.getType() == Tokens.STRING_LITERAL) {
             context.next();
             return new NStringConstant(token.getValueAs());
         }
