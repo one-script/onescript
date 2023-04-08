@@ -1,15 +1,14 @@
 package one.parser.util;
 
-import one.ast.NBinaryOp;
-import one.ast.NConstant;
-import one.ast.NExpression;
+import one.ast.expr.NBinaryOp;
+import one.ast.expr.NConstant;
+import one.ast.expr.NExpression;
 import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.token.TokenType;
 
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Utility for uniting all repeatable binary operator parsing.

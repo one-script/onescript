@@ -1,10 +1,9 @@
-package one.parser.rule;
+package one.parser.rule.expr;
 
-import one.ast.NBinaryOp;
-import one.ast.NExpression;
+import one.ast.expr.NExpression;
 import one.lang.OneOperator;
 import one.parser.ParseContext;
-import one.parser.token.TokenType;
+import one.parser.rule.ParserRule;
 import one.parser.util.BiOpSpec;
 
 import java.util.Set;

@@ -1,7 +1,7 @@
 package one.test.misc;
 
-import one.ast.NBinaryOp;
-import one.ast.NConstant;
+import one.ast.expr.NBinaryOp;
+import one.ast.expr.NConstant;
 import one.lang.OneOperator;
 import org.junit.jupiter.api.Test;
 

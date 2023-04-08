@@ -1,6 +1,6 @@
 package one.test.parser;
 
-import one.ast.NExpression;
+import one.ast.expr.NExpression;
 import one.parser.LexContext;
 import one.parser.OneParser;
 import one.parser.ParseContext;

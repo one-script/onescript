@@ -1,4 +1,6 @@
-package one.ast;
+package one.ast.statement;
+
+import one.ast.expr.NExpression;
 
 public class NLetStatement extends NStatement {
 

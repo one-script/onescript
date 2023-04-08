@@ -107,6 +107,7 @@ public class Tokens {
     public static final StaticToken ASSIGN = TokenType.literal("assign", "=");
     public static final StaticToken DOT = TokenType.literal("dot", ".");
     public static final StaticToken ARROW = TokenType.literal("arrow", "->");
+    public static final StaticToken ASTERISK = TokenType.literal("asterisk", "*");
 
     /* Keywords */
 
@@ -154,5 +155,12 @@ public class Tokens {
     public static final Keyword THIS      = TokenType.staticKeyword("this");
     public static final Keyword INTERFACE = TokenType.staticKeyword("interface");
     public static final Keyword RECORD    = TokenType.staticKeyword("record");
+
+    // Script
+    public static final Keyword PACKAGE = TokenType.staticKeyword("package");
+    public static final Keyword IMPORT = TokenType.staticKeyword("import");
+
+    // Other
+    public static final Keyword AS = TokenType.staticKeyword("as");
 
 }

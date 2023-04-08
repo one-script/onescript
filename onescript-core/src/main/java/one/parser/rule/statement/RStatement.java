@@ -1,7 +1,8 @@
-package one.parser.rule;
+package one.parser.rule.statement;
 
-import one.ast.NStatement;
+import one.ast.statement.NStatement;
 import one.parser.ParseContext;
+import one.parser.rule.ParserRule;
 
 public class RStatement extends ParserRule<NStatement> {
 

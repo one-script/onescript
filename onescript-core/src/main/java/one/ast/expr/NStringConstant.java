@@ -1,4 +1,4 @@
-package one.ast;
+package one.ast.expr;
 
 public class NStringConstant extends NConstant<String> {
 

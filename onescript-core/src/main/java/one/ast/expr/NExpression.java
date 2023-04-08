@@ -1,4 +1,6 @@
-package one.ast;
+package one.ast.expr;
+
+import one.ast.ASTNode;
 
 /**
  * An expression is any node which has the

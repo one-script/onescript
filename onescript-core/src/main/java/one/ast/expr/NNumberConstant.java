@@ -1,4 +1,4 @@
-package one.ast;
+package one.ast.expr;
 
 public class NNumberConstant extends NConstant<Double> {
 

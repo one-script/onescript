@@ -1,9 +1,6 @@
 package one.runtime;
 
-import one.ast.NExpression;
-import one.lang.OneSystem;
-import one.lang.annotation.OneMethod;
-import one.lang.annotation.OneSpecial;
+import one.ast.expr.NExpression;
 import one.parser.LexContext;
 import one.parser.OneParser;
 import one.parser.ParseContext;

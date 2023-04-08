@@ -1,13 +1,20 @@
 package one.parser;
 
 import one.ast.ASTNode;
+import one.parser.error.OneParseException;
 import one.parser.rule.ParserRule;
 import one.parser.token.Token;
 import one.parser.token.TokenType;
+import one.parser.token.Tokens;
 import one.parser.util.StringLocatable;
 import one.parser.util.StringLocation;
+import one.script.Symbol;
+import one.script.SymbolType;
 import one.util.Sequence;
 import one.util.SequenceReader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A context for the grammar parsing.
@@ -93,6 +100,32 @@ public class ParseContext extends SequenceReader<Token<?>> {
             return locatable;
         locatable.setLocation(loc);
         return locatable;
+    }
+
+    public Symbol expectSymbol(SymbolType type) {
+        if (currentType() != Tokens.IDENTIFIER)
+            throw endOrHere(new OneParseException("expected symbol name [id.]..."));
+        List<String> parts = new ArrayList<>();
+        TokenType<?> t;
+        while ((t = currentType()) == Tokens.IDENTIFIER) {
+            parts.add(current().getValueAs());
+            next();
+            if (currentType() != Tokens.DOT)
+                break;
+            next();
+        }
+
+        if (t == Tokens.ASTERISK) {
+            parts.add("*");
+        }
+
+        return new Symbol(parts, type);
+    }
+
+    public void expectSemicolon() {
+        if (currentType() != Tokens.SEMICOLON)
+            throw endOrHere(new OneParseException("expected semicolon"));
+        next();
     }
 
     /**
