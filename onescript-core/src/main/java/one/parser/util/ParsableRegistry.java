@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Matches operators in a tree like structure.
+ * Matches parsable objects in a tree like structure.
  */
-public class OperatorRegistry implements StringReader.ForwardMatcherProvider<OneOperator> {
+public class ParsableRegistry<T extends Parsable> implements StringReader.ForwardMatcherProvider<T> {
 
     /** A node in the tree. */
     private class Node {
-        public OneOperator operator;
+        public T value;
         public char character;
         public Map<Character, Node> children = new HashMap<>();
 
@@ -21,19 +21,19 @@ public class OperatorRegistry implements StringReader.ForwardMatcherProvider<One
         }
     }
 
-    /** Linearly stored list of operators. */
-    private final Map<String, OneOperator> map = new HashMap<>();
+    /** All parsable objects mapped by name. */
+    private final Map<String, T> map = new HashMap<>();
 
     /** The root node. */
     private final Node root = new Node();
 
-    public Map<String, OneOperator> getMap() {
+    public Map<String, T> getMap() {
         return map;
     }
 
-    public void insert(OneOperator operator) {
-        map.put(operator.getName(), operator);
-        for (String str : operator.getAliases()) {
+    public void insert(T value) {
+        map.put(value.getName(), value);
+        for (String str : value.getAliases()) {
             Node current = root;
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
@@ -46,13 +46,13 @@ public class OperatorRegistry implements StringReader.ForwardMatcherProvider<One
                 }
             }
 
-            current.operator = operator;
+            current.value = value;
         }
     }
 
-    public void remove(OneOperator operator) {
-        map.remove(operator.getName());
-        for (String str : operator.getAliases()) {
+    public void remove(T value) {
+        map.remove(value.getName());
+        for (String str : value.getAliases()) {
             Node current = root;
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
@@ -64,12 +64,12 @@ public class OperatorRegistry implements StringReader.ForwardMatcherProvider<One
             }
 
             if (current != null)
-                current.operator = null;
+                current.value = null;
         }
     }
 
     @Override
-    public StringReader.ForwardMatcher<OneOperator> matcher() {
+    public StringReader.ForwardMatcher<T> matcher() {
         return new StringReader.ForwardMatcher<>() {
             Node oldNode;
             Node currentNode = root;
@@ -83,10 +83,10 @@ public class OperatorRegistry implements StringReader.ForwardMatcherProvider<One
             }
 
             @Override
-            public OneOperator getResult() {
+            public T getResult() {
                 if (oldNode == null)
                     return null;
-                return oldNode.operator;
+                return oldNode.value;
             }
         };
     }

@@ -6,6 +6,7 @@ import one.parser.util.StringLocation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.security.Key;
 
 /**
  * Built-in token types.
@@ -85,11 +86,27 @@ public class Tokens {
      */
     public static final TokenType<String> IDENTIFIER = TokenType.noParser("identifier");
 
-    public static final TokenType<Void> LEFT_PAREN = TokenType.oneChar("leftParen", '(');
-    public static final TokenType<Void> RIGHT_PAREN = TokenType.oneChar("rightParen", ')');
+    public static void registerAllStatics(OneParser parser) {
+        try {
+            for (Field f : Tokens.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(f.getModifiers()) || f.getType() != StaticToken.class) continue;
+                parser.addStaticToken((StaticToken) f.get(null));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public static final TokenType<Void> SEMICOLON = TokenType.oneChar("semicolon", ';');
-    public static final TokenType<Void> COLON = TokenType.oneChar("colon", ';');
+    public static final StaticToken LEFT_PAREN = TokenType.literal("leftParen", "(");
+    public static final StaticToken RIGHT_PAREN = TokenType.literal("rightParen", ")");
+    public static final StaticToken LEFT_BRACE = TokenType.literal("leftBrace", "{");
+    public static final StaticToken RIGHT_BRACE = TokenType.literal("rightBrace", "}");
+
+    public static final StaticToken SEMICOLON = TokenType.literal("semicolon", ";");
+    public static final StaticToken COLON = TokenType.literal("colon", ":");
+    public static final StaticToken ASSIGN = TokenType.literal("assign", "=");
+    public static final StaticToken DOT = TokenType.literal("dot", ".");
+    public static final StaticToken ARROW = TokenType.literal("arrow", "->");
 
     /* Keywords */
 
@@ -104,6 +121,16 @@ public class Tokens {
         }
     }
 
+    // Access
+    public static final Keyword PUBLIC    = TokenType.staticKeyword("pub");
+    public static final Keyword PROTECTED = TokenType.staticKeyword("protected");
+    public static final Keyword PRIVATE   = TokenType.staticKeyword("private");
+
+    // Modifiers
+    public static final Keyword ABSTRACT = TokenType.staticKeyword("abstract");
+    public static final Keyword FINAL    = TokenType.staticKeyword("final");
+    public static final Keyword STATIC   = TokenType.staticKeyword("static");
+
     // Variables
     public static final Keyword LET = TokenType.staticKeyword("let");
 
@@ -113,5 +140,19 @@ public class Tokens {
     // Methods
     public static final Keyword FUNC = TokenType.staticKeyword("func");
 
+    // Control Flow
+    public static final Keyword IF       = TokenType.staticKeyword("if");
+    public static final Keyword ELSE     = TokenType.staticKeyword("else");
+    public static final Keyword WHILE    = TokenType.staticKeyword("while");
+    public static final Keyword FOR      = TokenType.staticKeyword("for");
+    public static final Keyword BREAK    = TokenType.staticKeyword("break");
+    public static final Keyword CONTINUE = TokenType.staticKeyword("continue");
+    public static final Keyword RETURN   = TokenType.staticKeyword("return");
+
+    // Classes
+    public static final Keyword CLASS     = TokenType.staticKeyword("class");
+    public static final Keyword THIS      = TokenType.staticKeyword("this");
+    public static final Keyword INTERFACE = TokenType.staticKeyword("interface");
+    public static final Keyword RECORD    = TokenType.staticKeyword("record");
 
 }

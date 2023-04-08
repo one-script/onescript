@@ -13,7 +13,19 @@ public class BasicExpressionTest {
     void test_ParseBasicExpr() {
         final OneParser parser = new OneParser();
         final String src = """
-                let myVar = "Hello, World!";
+                class Int : BoxedNumber {
+                    val: int value;
+                    
+                    pub this(int: v) {
+                        this.value = v;
+                    }
+                    
+                    pub static this(String: str) int {
+                        return Integer.parseInt(str);
+                    }
+                }
+                
+                int myInt = Int("69")
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));

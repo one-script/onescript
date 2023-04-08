@@ -5,7 +5,7 @@ import one.ast.ASTNode;
 import one.parser.error.OneParseException;
 import one.parser.rule.*;
 import one.parser.token.*;
-import one.parser.util.OperatorRegistry;
+import one.parser.util.ParsableRegistry;
 import one.parser.util.StringLocation;
 import one.parser.util.StringReader;
 
@@ -45,7 +45,12 @@ public class OneParser {
     /**
      * The registered operators.
      */
-    final OperatorRegistry operators = new OperatorRegistry();
+    final ParsableRegistry<OneOperator> operators = new ParsableRegistry<>();
+
+    /**
+     * The registered static tokens.
+     */
+    final ParsableRegistry<StaticToken> staticTokens = new ParsableRegistry<>();
 
     /**
      * The registered parser rules by name.
@@ -120,8 +125,22 @@ public class OneParser {
         return this;
     }
 
-    public OperatorRegistry getOperators() {
+    public ParsableRegistry<OneOperator> getOperators() {
         return operators;
+    }
+
+    public OneParser addStaticToken(StaticToken token) {
+        staticTokens.insert(token);
+        return this;
+    }
+
+    public OneParser removeStaticToken(StaticToken token) {
+        staticTokens.remove(token);
+        return this;
+    }
+
+    public ParsableRegistry<StaticToken> getStaticTokens() {
+        return staticTokens;
     }
 
     /* Initialize Defaults */
@@ -140,6 +159,7 @@ public class OneParser {
         addParserRule(new RLiteral());
 
         Tokens.registerAllKeywords(this);
+        Tokens.registerAllStatics(this);
     }
 
     /* ----------- Lexer -------------- */
@@ -170,18 +190,15 @@ public class OneParser {
                 continue;
             }
 
-            // match special characters
-            TokenType<?> tkType = switch (context.curr()) {
-                case '(' -> Tokens.LEFT_PAREN;
-                case ')' -> Tokens.RIGHT_PAREN;
-                case ';' -> Tokens.SEMICOLON;
-                case ':' -> Tokens.COLON;
-                default -> null;
-            };
-
-            if (tkType != null) {
-                context.addToken(tkType);
-                context.next();
+            // match literals
+            context.begin();
+            StaticToken staticToken = context.matchForward(staticTokens);
+            if (staticToken == null) {
+                context.reset();
+            } else {
+                Token<Void> tk = new Token<>(staticToken);
+                tk.setLocation(context.end());
+                context.addToken(tk);
                 continue;
             }
 

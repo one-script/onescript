@@ -143,34 +143,3 @@ parser.addParserRule(
 		}, "ctItemStack")
 );
 ```
-A pseudo-code Java definition of this script loaded would be:
-```java
-a.b.c
- - Script$MyScript
- - MyClass
-
-// Script$MyScript //
-public static void script$run(OneRuntime runtime) {
-    one.lang.OneSystem.println("Hello, World!");
-}
-
-public static String hello(String name) {
-    return "Hello, " + name + "!";
-}
-
-// MyClass //
-class MyClass {
-    public static final MyClass INSTANCE;
-
-    public static MyClass get() {
-        return INSTANCE;
-    }
-
-    public String myField = "Hey Guys!";
-
-    public MyClass(String myField) {
-    	this.myField = myField;
-    }
-}
-
-```

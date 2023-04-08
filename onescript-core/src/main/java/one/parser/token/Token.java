@@ -82,7 +82,7 @@ public class Token<T> implements StringLocatable {
      * @return The string.
      */
     public String toBasicString() {
-        return type.getName() + "(" + (hasValue ? value : "") + ")";
+        return type.getName() + (hasValue ? "(" + value  + ")" : "");
     }
 
     @Override

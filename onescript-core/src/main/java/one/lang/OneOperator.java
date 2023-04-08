@@ -1,17 +1,19 @@
 package one.lang;
 
+import one.lang.annotation.OneMethod;
+import one.lang.annotation.OneSpecial;
 import one.parser.token.Token;
 import one.parser.token.TokenType;
+import one.parser.util.Parsable;
 import one.runtime.OneRuntime;
 
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 /**
  * Describes and implements operators for OneScript.
  */
-public class OneOperator {
+public class OneOperator implements Parsable {
 
     public static class Unary extends OneOperator {
         private Function<Object, Object> simpleEval;
@@ -151,10 +153,12 @@ public class OneOperator {
         return postfixUnaryForm;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String[] getAliases() {
         return aliases;
     }

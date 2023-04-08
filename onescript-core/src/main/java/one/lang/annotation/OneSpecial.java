@@ -1,4 +1,4 @@
-package one.lang;
+package one.lang.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

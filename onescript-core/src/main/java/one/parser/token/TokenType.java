@@ -62,6 +62,10 @@ public abstract class TokenType<T> implements TokenParser<T> {
         return new Keyword(name);
     }
 
+    public static StaticToken literal(String name, String... aliases) {
+        return new StaticToken(name, aliases);
+    }
+
     public static TokenType<Void> oneChar(String name, char c) {
         return new TokenType<>(name) {
             @Override

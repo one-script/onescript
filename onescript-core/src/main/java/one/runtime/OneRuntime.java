@@ -1,8 +1,9 @@
 package one.runtime;
 
 import one.ast.NExpression;
-import one.lang.OneMethod;
-import one.lang.OneSpecial;
+import one.lang.OneSystem;
+import one.lang.annotation.OneMethod;
+import one.lang.annotation.OneSpecial;
 import one.parser.LexContext;
 import one.parser.OneParser;
 import one.parser.ParseContext;
@@ -16,13 +17,6 @@ import one.util.Sequence;
  * The central class for the OneScript runtime.
  */
 public class OneRuntime {
-
-    @OneMethod
-    public static OneRuntime get(@OneSpecial OneRuntime runtime) {
-        return runtime;
-    }
-
-    /////////////////////////////////
 
     /* TODO: replace this with sourcing instances
         from a runtime factory or builder */
