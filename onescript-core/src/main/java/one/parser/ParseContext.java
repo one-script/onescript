@@ -1,6 +1,7 @@
 package one.parser;
 
 import one.ast.ASTNode;
+import one.lang.OneOperator;
 import one.parser.error.OneParseException;
 import one.parser.rule.ParserRule;
 import one.parser.token.Token;
@@ -8,8 +9,8 @@ import one.parser.token.TokenType;
 import one.parser.token.Tokens;
 import one.parser.util.StringLocatable;
 import one.parser.util.StringLocation;
-import one.script.Symbol;
-import one.script.SymbolType;
+import one.symbol.Symbol;
+import one.symbol.SymbolType;
 import one.util.Sequence;
 import one.util.SequenceReader;
 
@@ -102,9 +103,9 @@ public class ParseContext extends SequenceReader<Token<?>> {
         return locatable;
     }
 
-    public Symbol expectSymbol(SymbolType type) {
+    public Symbol parseSymbol(SymbolType type) {
         if (currentType() != Tokens.IDENTIFIER)
-            throw endOrHere(new OneParseException("expected symbol name [id.]..."));
+            return null;
         List<String> parts = new ArrayList<>();
         TokenType<?> t;
         while ((t = currentType()) == Tokens.IDENTIFIER) {
@@ -115,11 +116,17 @@ public class ParseContext extends SequenceReader<Token<?>> {
             next();
         }
 
-        if (t == Tokens.ASTERISK) {
+        if (t == TokenType.OPERATOR && current().getValueAs() == OneOperator.MUL) {
             parts.add("*");
         }
 
         return new Symbol(parts, type);
+    }
+
+    public Symbol expectSymbol(SymbolType type) {
+        if (currentType() != Tokens.IDENTIFIER)
+            throw endOrHere(new OneParseException("expected symbol name [id.]..."));
+        return parseSymbol(type);
     }
 
     public void expectSemicolon() {

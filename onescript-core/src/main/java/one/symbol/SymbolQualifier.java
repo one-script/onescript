@@ -1,4 +1,4 @@
-package one.script;
+package one.symbol;
 
 /**
  * Qualifies symbols of the correct type from their

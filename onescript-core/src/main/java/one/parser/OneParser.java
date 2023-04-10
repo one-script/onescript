@@ -1,10 +1,15 @@
 package one.parser;
 
-import one.lang.OneOperator;
 import one.ast.ASTNode;
+import one.lang.OneModifier;
+import one.lang.OneOperator;
 import one.parser.error.OneParseException;
-import one.parser.rule.*;
+import one.parser.rule.ParserRule;
 import one.parser.rule.expr.*;
+import one.parser.rule.script.RScriptRoot;
+import one.parser.rule.symbol.RAnnotation;
+import one.parser.rule.symbol.RClass;
+import one.parser.rule.symbol.RClassBody;
 import one.parser.token.*;
 import one.parser.util.ParsableRegistry;
 import one.parser.util.StringLocation;
@@ -52,6 +57,11 @@ public class OneParser {
      * The registered static tokens.
      */
     final ParsableRegistry<StaticToken> staticTokens = new ParsableRegistry<>();
+
+    /**
+     * The registered parsable modifiers.
+     */
+    final ParsableRegistry<OneModifier> parsableModifiers = new ParsableRegistry<>();
 
     /**
      * The registered parser rules by name.
@@ -153,6 +163,10 @@ public class OneParser {
         addOperator(OneOperator.MOD);
         addOperator(OneOperator.POW);
 
+        addParserRule(new RScriptRoot());
+        addParserRule(new RClassBody());
+        addParserRule(new RClass());
+        addParserRule(new RAnnotation());
         addParserRule(new RExpression());
         addParserRule(new RTerm());
         addParserRule(new RFactor());
@@ -161,6 +175,13 @@ public class OneParser {
 
         Tokens.registerAllKeywords(this);
         Tokens.registerAllStatics(this);
+
+        // register all modifiers
+        for (OneModifier modifier : OneModifier.values()) {
+            if (modifier.getAlias() != null) {
+                parsableModifiers.insert(modifier);
+            }
+        }
     }
 
     /* ----------- Lexer -------------- */
@@ -188,6 +209,18 @@ public class OneParser {
                 while (!context.pConsumeFullString("*/"))
                     context.next();
                 context.next(2);
+                continue;
+            }
+
+            // match modifiers
+            context.begin();
+            OneModifier modifier = context.matchForward(parsableModifiers);
+            if (modifier == null) {
+                context.reset();
+            } else {
+                Token<OneModifier> token = new Token<>(TokenType.MODIFIER, modifier);
+                token.setLocation(context.end());
+                context.addToken(token);
                 continue;
             }
 

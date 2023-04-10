@@ -1,10 +1,9 @@
-package one.script;
+package one.symbol;
 
 import one.util.Strings;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * Denotes a symbol or multiple symbols if the
@@ -55,6 +54,11 @@ public class Symbol {
     }
 
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
         return name;
     }
 

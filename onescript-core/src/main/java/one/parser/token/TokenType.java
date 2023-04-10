@@ -1,5 +1,6 @@
 package one.parser.token;
 
+import one.lang.OneModifier;
 import one.lang.OneOperator;
 import one.parser.LexContext;
 import one.parser.util.RegexValueFactory;
@@ -78,6 +79,7 @@ public abstract class TokenType<T> implements TokenParser<T> {
     }
 
     public static final TokenType<OneOperator> OPERATOR = noParser("operator");
+    public static final TokenType<OneModifier> MODIFIER = noParser("modifier");
 
     ////////////////////////////////////////////
 

@@ -107,7 +107,7 @@ public class Tokens {
     public static final StaticToken ASSIGN = TokenType.literal("assign", "=");
     public static final StaticToken DOT = TokenType.literal("dot", ".");
     public static final StaticToken ARROW = TokenType.literal("arrow", "->");
-    public static final StaticToken ASTERISK = TokenType.literal("asterisk", "*");
+    public static final StaticToken AT = TokenType.literal("at", "@");
 
     /* Keywords */
 
@@ -121,16 +121,6 @@ public class Tokens {
             throw new RuntimeException(e);
         }
     }
-
-    // Access
-    public static final Keyword PUBLIC    = TokenType.staticKeyword("pub");
-    public static final Keyword PROTECTED = TokenType.staticKeyword("protected");
-    public static final Keyword PRIVATE   = TokenType.staticKeyword("private");
-
-    // Modifiers
-    public static final Keyword ABSTRACT = TokenType.staticKeyword("abstract");
-    public static final Keyword FINAL    = TokenType.staticKeyword("final");
-    public static final Keyword STATIC   = TokenType.staticKeyword("static");
 
     // Variables
     public static final Keyword LET = TokenType.staticKeyword("let");

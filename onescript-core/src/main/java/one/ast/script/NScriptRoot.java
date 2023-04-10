@@ -2,7 +2,7 @@ package one.ast.script;
 
 import one.ast.statement.NBlock;
 import one.ast.symbol.NClassBody;
-import one.script.SymbolQualifier;
+import one.symbol.SymbolQualifier;
 
 import java.util.ArrayList;
 import java.util.List;

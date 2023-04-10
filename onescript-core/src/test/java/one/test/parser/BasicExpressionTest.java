@@ -13,32 +13,22 @@ public class BasicExpressionTest {
     void test_ParseBasicExpr() {
         final OneParser parser = new OneParser();
         final String src = """
-                class Int : BoxedNumber {
-                    val: int value;
+                @MyAnnotation
+                class Int : Number {
                     
-                    pub this(int: v) {
-                        this.value = v;
-                    }
-                    
-                    pub static this(String: str) int {
-                        return Integer.parseInt(str);
-                    }
                 }
-                
-                int myInt = Int("69")
                 """;
 
         LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));
         ParseContext parseContext = parser.parse(
                 new ParseContext(parser,
                         Sequence.ofList(lexContext.getTokens()),
-                        "expr")
+                        "classBody")
                 .setOptimizeConstants(true)
         );
 
         System.out.println(lexContext.getTokens());
         System.out.println(parseContext.getRootNode());
-        System.out.println(parseContext.getRootNode().<NExpression>as().evaluateSimple());
     }
 
 }

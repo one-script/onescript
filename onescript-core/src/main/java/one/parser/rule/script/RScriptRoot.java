@@ -2,12 +2,14 @@ package one.parser.rule.script;
 
 import one.ast.script.NScriptRoot;
 import one.ast.statement.NStatement;
+import one.lang.OneModifier;
 import one.parser.ParseContext;
 import one.parser.rule.ParserRule;
+import one.parser.token.TokenType;
 import one.parser.token.Tokens;
-import one.script.Symbol;
-import one.script.SymbolQualifier;
-import one.script.SymbolType;
+import one.symbol.Symbol;
+import one.symbol.SymbolQualifier;
+import one.symbol.SymbolType;
 
 public class RScriptRoot extends ParserRule<NScriptRoot> {
 
@@ -37,7 +39,7 @@ public class RScriptRoot extends ParserRule<NScriptRoot> {
                 }
 
                 // import static (methods and field)
-                if (context.currentType() == Tokens.STATIC) {
+                if (context.currentType() == TokenType.MODIFIER && context.current().getValueAs() == OneModifier.STATIC) {
                     Symbol symbol = context.expectSymbol(SymbolType.MEMBER);
                     root.addSymbolQualifier(SymbolQualifier.qualifyMembers(symbol));
                 }

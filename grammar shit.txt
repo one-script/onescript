@@ -1,6 +1,6 @@
 method = func id([id:] id, ...) [id] body
 
-body = -> expr | block
+body = -> expr | { statement... }
 block = statement | { statement... }
 statement = |[
 

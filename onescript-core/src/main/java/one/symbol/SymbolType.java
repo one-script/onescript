@@ -1,4 +1,4 @@
-package one.script;
+package one.symbol;
 
 import java.util.List;
 import java.util.function.Function;
