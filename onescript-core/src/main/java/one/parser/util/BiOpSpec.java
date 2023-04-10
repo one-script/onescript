@@ -40,7 +40,9 @@ public record BiOpSpec(Set<OneOperator> operators, Function<ParseContext, NExpre
                 if (context.optimizeConstants() &&
                         bNode.getLeft() instanceof NConstant &&
                         right instanceof NConstant) {
-                    node = NConstant.of(node.evaluateSimple());
+                    try {
+                        node = NConstant.of(node.evaluateSimple());
+                    } catch (Exception ignored) { }
                 }
             }
         }

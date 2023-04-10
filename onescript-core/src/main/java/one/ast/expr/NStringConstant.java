@@ -13,4 +13,9 @@ public class NStringConstant extends NConstant<String> {
         return "strConstant";
     }
 
+    @Override
+    public String getDataString() {
+        return "\"" + getValue() + "\"";
+    }
+
 }

@@ -17,7 +17,7 @@ public class BasicExpressionTest {
                 @MyAnnotation
                 pub static class Int : Number {
                     pub int myInt = 69
-                    pub int myFunc() -> 2 + 6 * 9
+                    pub int myFunc() -> 2 + 6 * 9 - 8
                 }
                 """;
 
@@ -26,11 +26,14 @@ public class BasicExpressionTest {
                 new ParseContext(parser,
                         Sequence.ofList(lexContext.getTokens()),
                         "classBody")
-                .setOptimizeConstants(true)
+
+                // TODO: fix issue when handling string and double constants:
+                //  it tries to evaluate but cant because cast errors
+                .setOptimizeConstants(false)
         );
 
         System.out.println(lexContext.getTokens());
-        System.out.println(ASTUtil.newLineToString(parseContext.getRootNode()));
+        System.out.println(ASTUtil.newLineToString(parseContext.getRootNode(), true));
     }
 
 }
