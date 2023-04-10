@@ -1,5 +1,6 @@
 package one.test.parser;
 
+import one.ast.ASTUtil;
 import one.ast.expr.NExpression;
 import one.parser.LexContext;
 import one.parser.OneParser;
@@ -14,8 +15,9 @@ public class BasicExpressionTest {
         final OneParser parser = new OneParser();
         final String src = """
                 @MyAnnotation
-                class Int : Number {
-                    
+                pub static class Int : Number {
+                    pub int myInt = 69
+                    pub int myFunc() -> 2 + 6 * 9
                 }
                 """;
 
@@ -28,7 +30,7 @@ public class BasicExpressionTest {
         );
 
         System.out.println(lexContext.getTokens());
-        System.out.println(parseContext.getRootNode());
+        System.out.println(ASTUtil.newLineToString(parseContext.getRootNode()));
     }
 
 }

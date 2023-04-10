@@ -1,11 +1,10 @@
-package one.parser.rule.symbol;
+package one.parser.rule.element;
 
-import one.ast.symbol.NClass;
-import one.ast.symbol.NClassBody;
+import one.ast.element.NClass;
+import one.ast.element.NClassBody;
 import one.lang.OneModifier;
 import one.parser.ParseContext;
 import one.parser.rule.ParserRule;
-import one.parser.token.TokenType;
 import one.parser.token.Tokens;
 import one.symbol.Symbol;
 import one.symbol.SymbolType;
@@ -21,22 +20,29 @@ public class RClass extends ParserRule<NClass> {
 
     @Override
     public boolean canParse(ParseContext context) {
-        return context.currentType() == Tokens.CLASS;
+        return true;
     }
 
     @Override
     public NClass parseNode(ParseContext context) {
-        // skip the class keyword
-        context.next();
-
         // collect modifiers
+        boolean foundClass = false;
         List<OneModifier> modifiers = new ArrayList<>();
-        while (context.currentType() == TokenType.MODIFIER) {
+        while (context.currentType() != Tokens.IDENTIFIER) {
+            if (context.currentType() == Tokens.CLASS) {
+                foundClass = true;
+                context.next();
+                continue;
+            }
+
             modifiers.add(context.current().getValueAs());
             context.next();
         }
 
-        Symbol name = context.expectSymbol(SymbolType.CLASS);
+        if (!foundClass)
+            return null;
+
+        Symbol name = context.expectSymbol(SymbolType.TYPE);
         NClass nClass = new NClass(name);
         nClass.setModifiers(modifiers);
 
@@ -66,7 +72,7 @@ public class RClass extends ParserRule<NClass> {
         if (context.currentType() == Tokens.COLON) {
             context.next();
             Symbol superSymbol;
-            while ((superSymbol = context.parseSymbol(SymbolType.CLASS)) != null) {
+            while ((superSymbol = context.parseSymbol(SymbolType.TYPE)) != null) {
                 nClass.addSuper(superSymbol);
             }
         }

@@ -15,6 +15,7 @@ import one.util.Sequence;
 import one.util.SequenceReader;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -103,24 +104,18 @@ public class ParseContext extends SequenceReader<Token<?>> {
         return locatable;
     }
 
-    public Symbol parseSymbol(SymbolType type) {
+    public Symbol parseSymbolGeneric(SymbolType type) {
+        return Symbol.parseGeneric(this, type);
+    }
+
+    public Symbol expectSymbolGeneric(SymbolType type) {
         if (currentType() != Tokens.IDENTIFIER)
-            return null;
-        List<String> parts = new ArrayList<>();
-        TokenType<?> t;
-        while ((t = currentType()) == Tokens.IDENTIFIER) {
-            parts.add(current().getValueAs());
-            next();
-            if (currentType() != Tokens.DOT)
-                break;
-            next();
-        }
+            throw endOrHere(new OneParseException("expected symbol name [id.]..."));
+        return parseSymbol(type);
+    }
 
-        if (t == TokenType.OPERATOR && current().getValueAs() == OneOperator.MUL) {
-            parts.add("*");
-        }
-
-        return new Symbol(parts, type);
+    public Symbol parseSymbol(SymbolType type) {
+        return Symbol.parse(this, type);
     }
 
     public Symbol expectSymbol(SymbolType type) {
@@ -133,6 +128,11 @@ public class ParseContext extends SequenceReader<Token<?>> {
         if (currentType() != Tokens.SEMICOLON)
             throw endOrHere(new OneParseException("expected semicolon"));
         next();
+    }
+
+    public void skipSemicolons() {
+        while (currentType() == Tokens.SEMICOLON)
+            next();
     }
 
     /**
@@ -149,20 +149,32 @@ public class ParseContext extends SequenceReader<Token<?>> {
     public <N> N tryParseNext(String queryTag) {
         // TODO: maybe cache the last successful parsers per tag
         //  and do some other shit for performance?
-        ParserRule<?> bestRule = null;
-        int bestPriority = Integer.MIN_VALUE;
+        List<ParserRule<?>> rules = new ArrayList<>();
         for (ParserRule<?> rule : parser.parserRuleList) {
-            if (rule.getPriority() > bestPriority &&
-                    rule.tagMatches(queryTag) &&
+            if (rule.tagMatches(queryTag) &&
                     rule.canParse(this)) {
-                bestRule = rule;
+                rules.add(rule);
             }
         }
 
-        if (bestRule == null)
+        if (rules.isEmpty())
             return null;
+        rules.sort(Comparator.comparingInt(ParserRule::getPriority));
 
-        return (N) bestRule.parseNode(this);
+        final int l = rules.size();
+        for (int i = l - 1; i >= 0; i--) {
+            ParserRule<?> rule = rules.get(i);
+
+            begin();
+            ASTNode node = rule.parseNode(this);
+            if (node == null) {
+                reset();
+            } else {
+                return (N) node;
+            }
+        }
+
+        return null;
     }
 
     public <N> N tryParseNext(String queryTag, Class<N> nClass) {

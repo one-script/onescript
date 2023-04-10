@@ -1,4 +1,4 @@
-package one.ast.symbol;
+package one.ast.element;
 
 import one.ast.ASTNode;
 import one.lang.OneModifier;

@@ -1,4 +1,4 @@
-package one.ast.symbol;
+package one.ast.element;
 
 import one.symbol.Symbol;
 
@@ -43,7 +43,7 @@ public class NClass extends NElement {
 
     @Override
     public String getDataString() {
-        return super.getDataString() + ", supers: " + supers;
+        return super.getDataString() + ", supers: " + supers + ", body: " + body;
     }
 
     @Override

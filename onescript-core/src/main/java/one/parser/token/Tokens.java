@@ -101,13 +101,17 @@ public class Tokens {
     public static final StaticToken RIGHT_PAREN = TokenType.literal("rightParen", ")");
     public static final StaticToken LEFT_BRACE = TokenType.literal("leftBrace", "{");
     public static final StaticToken RIGHT_BRACE = TokenType.literal("rightBrace", "}");
+    public static final StaticToken LEFT_ANGLE = TokenType.literal("leftAngle", "<");
+    public static final StaticToken RIGHT_ANGLE = TokenType.literal("rightAngle", ">");
 
     public static final StaticToken SEMICOLON = TokenType.literal("semicolon", ";");
     public static final StaticToken COLON = TokenType.literal("colon", ":");
+
     public static final StaticToken ASSIGN = TokenType.literal("assign", "=");
     public static final StaticToken DOT = TokenType.literal("dot", ".");
     public static final StaticToken ARROW = TokenType.literal("arrow", "->");
     public static final StaticToken AT = TokenType.literal("at", "@");
+    public static final StaticToken COMMA = TokenType.literal("comma", ",");
 
     /* Keywords */
 

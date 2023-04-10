@@ -1,4 +1,4 @@
-package one.ast.symbol;
+package one.ast.element;
 
 import one.ast.ASTNode;
 import one.ast.expr.NExpression;
@@ -63,6 +63,12 @@ public class NAnnotation extends ASTNode {
     @Override
     public String getTypeName() {
         return "annotation";
+    }
+
+    @Override
+    public String getDataString() {
+        return symbol + (unnamedParam != null ? " unnamed: " + unnamedParam : "") +
+                (namedParams != null && !namedParams.isEmpty() ? " named: " + namedParams : "");
     }
 
 }

@@ -1,28 +1,20 @@
-package one.parser.rule.symbol;
+package one.parser.rule.element;
 
-import one.ast.symbol.NAnnotation;
+import one.ast.element.NAnnotation;
 import one.parser.ParseContext;
-import one.parser.rule.ParserRule;
 import one.parser.token.Tokens;
 import one.symbol.Symbol;
 import one.symbol.SymbolType;
 
-public class RAnnotation extends ParserRule<NAnnotation> {
+/**
+ * Methods for parsing OneScript elements.
+ */
+public class ElementParsing {
 
-    public RAnnotation() {
-        super("annotation", "decl", 1);
-    }
-
-    @Override
-    public boolean canParse(ParseContext context) {
-        return context.currentType() == Tokens.AT;
-    }
-
-    @Override
-    public NAnnotation parseNode(ParseContext context) {
+    public static NAnnotation parseAnnotation(ParseContext context) {
         context.begin();
         context.next(); // skip @
-        Symbol symbol = context.expectSymbol(SymbolType.CLASS);
+        Symbol symbol = context.expectSymbol(SymbolType.TYPE);
         NAnnotation annotation = new NAnnotation(symbol);
 
         // check for parameters

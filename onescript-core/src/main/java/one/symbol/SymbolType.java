@@ -11,9 +11,9 @@ public enum SymbolType {
     PACKAGE(null, null),
 
     /**
-     * References a class.
+     * References a class or other kind of type.
      */
-    CLASS(PACKAGE, klass -> {
+    TYPE(PACKAGE, klass -> {
         List<String> np = klass.getNameParts();
         np = np.subList(0, np.size() - 1);
         return new Symbol(np, PACKAGE);
@@ -22,11 +22,16 @@ public enum SymbolType {
     /**
      * References a class member.
      */
-    MEMBER(CLASS, member -> {
+    MEMBER(TYPE, member -> {
         List<String> np = member.getNameParts();
         np = np.subList(0, np.size() - 1);
-        return new Symbol(np, CLASS);
-    })
+        return new Symbol(np, TYPE);
+    }),
+
+    /**
+     * A name.
+     */
+    NAME(null, null)
 
     ;
 

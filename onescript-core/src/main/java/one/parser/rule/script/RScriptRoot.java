@@ -34,7 +34,7 @@ public class RScriptRoot extends ParserRule<NScriptRoot> {
 
                 // import (classes)
                 if (context.currentType() == Tokens.IDENTIFIER) {
-                    Symbol symbol = context.expectSymbol(SymbolType.CLASS);
+                    Symbol symbol = context.expectSymbol(SymbolType.TYPE);
                     root.addSymbolQualifier(SymbolQualifier.qualifyClasses(symbol));
                 }
 

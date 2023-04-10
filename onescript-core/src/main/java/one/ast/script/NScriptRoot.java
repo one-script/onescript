@@ -1,7 +1,7 @@
 package one.ast.script;
 
 import one.ast.statement.NBlock;
-import one.ast.symbol.NClassBody;
+import one.ast.element.NClassBody;
 import one.symbol.SymbolQualifier;
 
 import java.util.ArrayList;
