@@ -1,7 +1,6 @@
 package one.test.parser;
 
-import one.ast.ASTUtil;
-import one.ast.expr.NExpression;
+import one.ast.ASTVisualizer;
 import one.parser.LexContext;
 import one.parser.OneParser;
 import one.parser.ParseContext;
@@ -33,7 +32,7 @@ public class BasicExpressionTest {
         );
 
         System.out.println(lexContext.getTokens());
-        System.out.println(ASTUtil.newLineToString(parseContext.getRootNode(), true));
+        System.out.println(ASTVisualizer.newLineToString(parseContext.getRootNode(), true));
     }
 
 }

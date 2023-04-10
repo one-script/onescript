@@ -6,7 +6,7 @@ import static one.util.ANSI.*;
 
 import java.util.Stack;
 
-public class ASTUtil {
+public class ASTVisualizer {
 
     private static String indent(Stack<String> indents, int space) {
         final StringBuilder b = new StringBuilder();
