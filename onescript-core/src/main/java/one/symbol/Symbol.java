@@ -135,6 +135,12 @@ public class Symbol {
     }
 
     public Symbol getDeclaring() {
+        if (type.declaringGetter == null) {
+            List<String> np = this.getNameParts();
+            np = np.subList(0, np.size() - 1);
+            return new Symbol(np, type);
+        }
+
         return type.declaringGetter.apply(this);
     }
 

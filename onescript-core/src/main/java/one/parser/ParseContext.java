@@ -99,8 +99,23 @@ public class ParseContext extends SequenceReader<Token<?>> {
         );
     }
 
+    public StringLocation hereStringLocation() {
+        Token<?> token = current();
+        if (token == null)
+            return null;
+        return token.getLocation();
+    }
+
     public <S extends StringLocatable> S endOrHere(S locatable) {
         StringLocation loc = endOrHereStringLocation();
+        if (loc == null)
+            return locatable;
+        locatable.setLocation(loc);
+        return locatable;
+    }
+
+    public <S extends StringLocatable> S here(S locatable) {
+        StringLocation loc = hereStringLocation();
         if (loc == null)
             return locatable;
         locatable.setLocation(loc);

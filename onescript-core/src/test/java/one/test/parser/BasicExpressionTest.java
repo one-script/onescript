@@ -19,7 +19,7 @@ public class BasicExpressionTest {
                     pub static class Int : Number {
                         pub int myInt = 69
                         pub int myFunc() {
-                            let a = 8 + 7;
+                            let a = (a.b.c().d = 4);
                             return 2 + 6 * 9 - 8;
                         }
                     }

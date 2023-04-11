@@ -1,8 +1,6 @@
 package one.parser.rule.expr;
 
-import one.ast.expr.NConstant;
-import one.ast.expr.NExpression;
-import one.ast.expr.NUnaryOp;
+import one.ast.expr.*;
 import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.error.OneParseException;
@@ -31,7 +29,7 @@ public class RBase extends ParserRule<NExpression> {
             OneOperator currentOp = context.current().getValueAs();
             OneOperator unaryOp = currentOp.toPrefixUnary();
             if (unaryOp == null)
-                throw context.endOrHere(new OneParseException("operator " + currentOp + " does not apply as a prefix unary operator"));
+                throw context.here(new OneParseException("operator " + currentOp + " does not apply as a prefix unary operator"));
             context.next();
             // TODO: maybe do this through rules by calling ParseContext#tryParseNext
             //  once ive optimized that, as this is unintuitive for developers
@@ -60,16 +58,61 @@ public class RBase extends ParserRule<NExpression> {
             context.next();
             value = context.tryParseNext("exprExpr", NExpression.class);
             if (context.currentType() != Tokens.RIGHT_PAREN)
-                throw context.endOrHere(new OneParseException("expected right parenthesis to close expression"));
+                throw context.here(new OneParseException("expected right parenthesis to close expression"));
             context.next();
         } else if /* check for identifier */ (context.currentType() == Tokens.IDENTIFIER) {
-            // TODO:
-            //  first parse the static symbol
-            //  check for assignment, if assignment parse assign and continue
-            //  check if it is a call or get
-            //  then while more ids come keep collecting and parsing
-            //   if assignment parse assign and continue
-            //   check for call or get
+            // parse initial symbol
+            Symbol symbol = context.parseSymbol(SymbolType.NAME);
+
+            if /* parse assign */ (context.currentType() == Tokens.ASSIGN) {
+                context.next();
+
+                NExpression<?> expr = context.tryParseNext("exprExpr");
+
+                return new NSymbolSet()
+                        .setSymbol(symbol)
+                        .setValue(expr);
+            } else /* parse call */ if (context.currentType() == Tokens.LEFT_PAREN) {
+                context.next();
+                NExpression<?> node = NCall.parseCall(context,
+                        new NSymbolCall().setSymbol(symbol));
+
+                while (context.currentType() == Tokens.DOT) {
+                    context.next();
+                    if (context.currentType() != Tokens.IDENTIFIER)
+                        throw context.here(new OneParseException("Expected identifier to index with"));
+
+                    // get identifier
+                    String name = context.current().getValueAs();
+                    context.next();
+
+                    // check for assignment or call
+                    if (context.currentType() == Tokens.ASSIGN) {
+                        context.next();
+                        NExpression<?> v = context.tryParseNext("exprExpr");
+
+                        node = new NMemberSet()
+                                .setTarget(node)
+                                .setName(name)
+                                .setValue(v);
+                    } else if (context.currentType() == Tokens.LEFT_PAREN) {
+                        context.next();
+                        node = NCall.parseCall(context,
+                                new NMemberCall()
+                                    .setTarget(node)
+                                    .setName(name));
+                    } else {
+                        node = new NMemberGet()
+                                .setTarget(node)
+                                .setName(name);
+                    }
+                }
+
+                return node;
+            } else /* basic get, return get */ {
+                return new NSymbolGet()
+                        .setSymbol(symbol);
+            }
         }
 
         // check for postfix unary operators

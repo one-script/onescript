@@ -28,11 +28,9 @@ public class ASTVisualizer {
         final StringReader  r = new StringReader(node.toString());
         final Stack<String> indents = new Stack<>();
 
-        final int col1min = 25;
-        final int col2min = 25;
+        final int colMin = 25;
 
-        int col1 = col1min;
-        int col2 = col2min;
+        int col = colMin;
 
         while (r.current() != StringReader.EOF) {
             // key highlighting //
@@ -71,11 +69,14 @@ public class ASTVisualizer {
             String suffix = "";
             String prefix = "";
             switch (r.current()) {
-                case '('      -> { indents.push(format("|", getRGBForeground(col1, col1, col1 * 2)));
+                case '('      -> { indents.push(format("|", getRGBForeground(col, col, col * 2)));
                     prefix = BLUE;
                     suffix = RESET + "\n" + indent(indents, 1); }
-                case '['      -> { indents.push(format("|", getRGBForeground(col2, col2 * 2, col2 * 2)));
+                case '['      -> { indents.push(format("|", getRGBForeground(col, col * 2, col * 2)));
                     prefix = CYAN;
+                    suffix = RESET + "\n" + indent(indents, 1); }
+                case '{'      -> { indents.push(format("|", getRGBForeground(col * 2, col, col * 2)));
+                    prefix = PURPLE;
                     suffix = RESET + "\n" + indent(indents, 1); }
                 case ')' -> { indents.pop();
                     prefix = "\n" + indent(indents, 1) + BLUE;
@@ -83,13 +84,15 @@ public class ASTVisualizer {
                 case ']' -> { indents.pop();
                     prefix = "\n" + indent(indents, 1) + CYAN;
                     suffix = RESET; }
+                case '}' -> { indents.pop();
+                    prefix = "\n" + indent(indents, 1) + PURPLE;
+                    suffix = RESET; }
 
                 case ':' -> { prefix = RED; suffix = RESET; }
                 case ',' -> { prefix = YELLOW; suffix = RESET; }
             };
 
-            col1 = col1min + indents.size() * 12;
-            col2 = col2min + indents.size() * 12;
+            col = colMin + indents.size() * 12;
 
             b.append(prefix).append(r.curr()).append(suffix);
 
