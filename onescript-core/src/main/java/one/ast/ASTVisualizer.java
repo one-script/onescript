@@ -19,6 +19,10 @@ public class ASTVisualizer {
 
     private static String BLUE = getRGBForeground(100, 100, 200);
 
+    private static boolean isNameChar(char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '-';
+    }
+
     public static String newLineToString(ASTNode node, boolean color) {
         final StringBuilder b = new StringBuilder();
         final StringReader  r = new StringReader(node.toString());
@@ -28,10 +32,26 @@ public class ASTVisualizer {
         int col2 = 120;
 
         while (r.current() != StringReader.EOF) {
-            char c = r.curr();
+            // key highlighting //
+            if (isNameChar(r.curr())) {
+                StringBuilder nb = new StringBuilder();
+                while (isNameChar(r.curr())) {
+                    nb.append(r.curr());
+                    r.next();
+                }
+
+                // check current char
+                String formatting = switch (r.current()) {
+                    case ':' -> RED;
+                    case '(' -> BLUE;
+                    default -> RESET;
+                };
+
+                b.append(formatting).append(nb).append(RESET);
+            }
 
             // string highlighting //
-            if (c == '"') {
+            if (r.current() == '"') {
                 b.append(GREEN).append('"');
                 r.next();
                 while (r.curr() != '"') {
@@ -47,7 +67,7 @@ public class ASTVisualizer {
             // other chars //
             String suffix = "";
             String prefix = "";
-            switch (c) {
+            switch (r.current()) {
                 case '('      -> { indents.push(format("|", getRGBForeground(col1, col1, col1 * 2)));
                     prefix = BLUE;
                     suffix = RESET + "\n" + indent(indents, 1); }
@@ -68,7 +88,7 @@ public class ASTVisualizer {
             col1 = 25 + indents.size() * 12;
             col2 = 25 + indents.size() * 12;
 
-            b.append(prefix).append(c).append(suffix);
+            b.append(prefix).append(r.curr()).append(suffix);
 
             r.next();
         }
