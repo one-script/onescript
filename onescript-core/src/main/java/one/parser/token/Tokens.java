@@ -27,6 +27,7 @@ public class Tokens {
     public static final TokenType<String> STRING_LITERAL = new TokenType<>("literalString") {
         @Override
         public Token<String> parseToken(LexContext context) {
+            int startLine = context.currentLine();
             int startIndex = context.index();
 
             final StringBuilder b = new StringBuilder();
@@ -55,7 +56,7 @@ public class Tokens {
             context.next();
 
             return new Token<>(STRING_LITERAL, b.toString())
-                    .setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex));
+                    .setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine));
         }
     };
 
@@ -69,12 +70,13 @@ public class Tokens {
     public static final TokenType<Double> NUMBER_LITERAL = new TokenType<>("literalNumber") {
         @Override
         public Token<Double> parseToken(LexContext context) {
+            int startLine = context.currentLine();
             int startIndex = context.index();
             double d = context.collectDouble();
             int endIndex = context.index();
 
             return new Token<>(NUMBER_LITERAL, d)
-                    .setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex));
+                    .setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine));
         }
     };
 

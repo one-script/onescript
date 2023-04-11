@@ -28,8 +28,11 @@ public class ASTVisualizer {
         final StringReader  r = new StringReader(node.toString());
         final Stack<String> indents = new Stack<>();
 
-        int col1 = 120;
-        int col2 = 120;
+        final int col1min = 25;
+        final int col2min = 25;
+
+        int col1 = col1min;
+        int col2 = col2min;
 
         while (r.current() != StringReader.EOF) {
             // key highlighting //
@@ -85,8 +88,8 @@ public class ASTVisualizer {
                 case ',' -> { prefix = YELLOW; suffix = RESET; }
             };
 
-            col1 = 25 + indents.size() * 12;
-            col2 = 25 + indents.size() * 12;
+            col1 = col1min + indents.size() * 12;
+            col2 = col2min + indents.size() * 12;
 
             b.append(prefix).append(r.curr()).append(suffix);
 

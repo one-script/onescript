@@ -31,9 +31,11 @@ public record BiOpSpec(Set<OneOperator> operators, Function<ParseContext, NExpre
             OneOperator currentOp;
             while (context.currentType() == TokenType.OPERATOR &&
                     operators.contains(currentOp = context.current().getValueAs())) {
+                StringLocation loc = context.current().getLocation();
                 context.next();
                 NExpression right = operandSupplier.apply(context);
                 NBinaryOp bNode = new NBinaryOp(currentOp, node, right);
+                bNode.setLocation(loc);
                 node = bNode;
 
                 // perform constant optimization

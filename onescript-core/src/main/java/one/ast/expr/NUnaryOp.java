@@ -42,7 +42,7 @@ public class NUnaryOp extends NExpression {
 
     @Override
     public String getDataString() {
-        return operator + ": " + operand;
+        return operator + " " + operand;
     }
 
     @Override

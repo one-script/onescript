@@ -94,7 +94,7 @@ public class RClassBody extends ParserRule<NClassBody> {
                     NExpression<?> fieldInitializer = null;
                     if (context.currentType() == Tokens.ASSIGN) {
                         context.next();
-                        fieldInitializer = context.tryParseNext("expr");
+                        fieldInitializer = context.tryParseNext("exprExpr");
                     }
 
                     element = new NField(name)

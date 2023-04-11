@@ -26,7 +26,7 @@ public class NBinaryOp extends NExpression {
 
     @Override
     public String getDataString() {
-        return operator + ": " + left + ", " + right;
+        return operator + " " + left + ", " + right;
     }
 
     public OneOperator getOperator() {

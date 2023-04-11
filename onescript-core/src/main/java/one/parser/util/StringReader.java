@@ -2,6 +2,7 @@ package one.parser.util;
 
 import one.parser.token.Token;
 import one.parser.token.TokenType;
+import one.util.AnalyzedString;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -78,18 +79,23 @@ public class StringReader implements Iterable<Character> {
 
     }
 
+    record SegmentStart(int startIndex, int startLine) { }
+
     //////////////////////////////
 
     // the current index
     private int index;
     // the string to read
     private final String str;
+    private AnalyzedString aStr;
     // the total string length
     private int len;
+    // the current line number
+    private int currentLine = 1;
 
     /* Not required, for ease of use. */
     private String fileName;
-    private Stack<Integer> startIndices = new Stack<>();
+    private Stack<SegmentStart> starts = new Stack<>();
 //    /* Scanner implementation */
 //    private java.io.StringReader scannerReader;
 //    private Scanner scanner;
@@ -152,6 +158,15 @@ public class StringReader implements Iterable<Character> {
         return fileName;
     }
 
+    public int currentLine() {
+        return currentLine;
+    }
+
+    public StringReader currentLine(int currentLine) {
+        this.currentLine = currentLine;
+        return this;
+    }
+
     /**
      * Begin a segment, pushing the start index
      * onto the indices stack.
@@ -159,7 +174,7 @@ public class StringReader implements Iterable<Character> {
      * @return This.
      */
     public StringReader begin() {
-        startIndices.push(index());
+        starts.push(new SegmentStart(index, currentLine));
         return this;
     }
 
@@ -170,7 +185,8 @@ public class StringReader implements Iterable<Character> {
      * @return The location.
      */
     public StringLocation end() {
-        return new StringLocation(fileName, str, startIndices.pop(), index());
+        SegmentStart start = starts.pop();
+        return new StringLocation(fileName, aStr(), start.startIndex, index(), start.startLine);
     }
 
     /**
@@ -181,8 +197,8 @@ public class StringReader implements Iterable<Character> {
      * @return This.
      */
     public StringReader reset() {
-        if (startIndices.size() != 0) {
-            index(startIndices.pop());
+        if (starts.size() != 0) {
+            index(starts.pop().startIndex());
         } else {
             index(0);
         }
@@ -198,7 +214,7 @@ public class StringReader implements Iterable<Character> {
      * @return The location.
      */
     public StringLocation endOrHere() {
-        if (startIndices.size() == 0)
+        if (starts.size() == 0)
             return here();
         return end();
     }
@@ -215,7 +231,7 @@ public class StringReader implements Iterable<Character> {
      * @return The location.
      */
     public StringLocation here() {
-        return new StringLocation(fileName, str, index, index);
+        return new StringLocation(fileName, aStr(), index, index, currentLine);
     }
 
     /**
@@ -228,7 +244,7 @@ public class StringReader implements Iterable<Character> {
      * @return The location.
      */
     public StringLocation here(int offStart, int offEnd) {
-        return new StringLocation(fileName, str, index + offStart, index + offEnd);
+        return new StringLocation(fileName, aStr(), index + offStart, index + offEnd, currentLine);
     }
 
     /**
@@ -309,7 +325,10 @@ public class StringReader implements Iterable<Character> {
      */
     public char next() {
         if ((index += 1) >= len || index < 0) return DONE;
-        return str.charAt(index);
+        char c = str.charAt(index);
+        if (c == '\n')
+            currentLine++;
+        return c;
     }
 
     /**
@@ -320,8 +339,9 @@ public class StringReader implements Iterable<Character> {
      * @return The character.
      */
     public char next(int a) {
-        if ((index += a) >= len || index < 0) return DONE;
-        return str.charAt(index);
+        for (int i = 0; i < a; i++)
+            next();
+        return current();
     }
 
     /**
@@ -332,7 +352,10 @@ public class StringReader implements Iterable<Character> {
      */
     public char prev() {
         if ((index -= 1) >= len || index < 0) return DONE;
-        return str.charAt(index);
+        char c = str.charAt(index);
+        if (c == '\n')
+            currentLine--;
+        return c;
     }
 
     /**
@@ -343,8 +366,9 @@ public class StringReader implements Iterable<Character> {
      * @return The character.
      */
     public char prev(int a) {
-        if ((index -= a) >= len || index < 0) return DONE;
-        return str.charAt(index);
+        for (int i = 0; i < a; i++)
+            prev();
+        return current();
     }
 
     /**
@@ -604,7 +628,16 @@ public class StringReader implements Iterable<Character> {
      * @return This.
      */
     public StringReader index(int i) {
-        this.index = i;
+        if (index > i) {
+            final int l = index - i;
+            for (int i2 = 0; i2 < l; i2++)
+                prev();
+        } else {
+            final int l = i - index;
+            for (int i2 = 0; i2 < l; i2++)
+                next();
+        }
+
         return this;
     }
 
@@ -613,6 +646,12 @@ public class StringReader implements Iterable<Character> {
      */
     public String str() {
         return str;
+    }
+
+    public AnalyzedString aStr() {
+        if (aStr == null)
+            aStr = new AnalyzedString(str);
+        return aStr;
     }
 
     /**

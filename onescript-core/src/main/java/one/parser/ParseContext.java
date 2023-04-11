@@ -1,7 +1,6 @@
 package one.parser;
 
 import one.ast.ASTNode;
-import one.lang.OneOperator;
 import one.parser.error.OneParseException;
 import one.parser.rule.ParserRule;
 import one.parser.token.Token;
@@ -93,7 +92,11 @@ public class ParseContext extends SequenceReader<Token<?>> {
         StringLocation start = startToken.getLocation();
         if (start == null)
             return null;
-        return new StringLocation(start.getFile(), start.getString(), start.getStartIndex(), end.getEndIndex());
+        return new StringLocation(
+                start.getFile(), start.getString(),
+                start.getStartIndex(), end.getEndIndex(),
+                start.getStartLineNumber(), end.getEndLineNumber()
+        );
     }
 
     public <S extends StringLocatable> S endOrHere(S locatable) {

@@ -9,6 +9,8 @@ import one.parser.rule.expr.*;
 import one.parser.rule.script.RScriptRoot;
 import one.parser.rule.element.RClass;
 import one.parser.rule.element.RClassBody;
+import one.parser.rule.statement.RBlock;
+import one.parser.rule.statement.RStatement;
 import one.parser.token.*;
 import one.parser.util.ParsableRegistry;
 import one.parser.util.StringLocation;
@@ -165,6 +167,8 @@ public class OneParser {
         addParserRule(new RScriptRoot());
         addParserRule(new RClassBody());
         addParserRule(new RClass());
+        addParserRule(new RBlock());
+        addParserRule(new RStatement());
         addParserRule(new RExpression());
         addParserRule(new RTerm());
         addParserRule(new RFactor());
@@ -252,18 +256,20 @@ public class OneParser {
             // keywords are just reserved identifiers
             if (isValidIdentifierStart(context.curr())) {
                 int startIndex = context.index();
+                int startLine = context.currentLine();
                 String id = context.collect(OneParser::isValidIdentifierChar);
                 int endIndex = context.index() - 1;
                 Token<?> token;
                 Keyword kw = getKeywordType(id);
                 token = kw != null ? new Token<>(kw) : new Token<>(Tokens.IDENTIFIER, id);
                 context.addToken(token
-                        .setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex)));
+                        .setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine)));
                 continue;
             }
 
             // try and parse operators
             context.begin();
+            int startLine = context.currentLine();
             int startIndex = context.index();
             OneOperator operator = context.matchForward(operators);
             if (operator == null) {
@@ -271,7 +277,7 @@ public class OneParser {
             } else {
                 int endIndex = context.index() - 1;
                 context.addToken(operator.createToken()
-                        .setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex)));
+                        .setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine)));
                 continue;
             }
 

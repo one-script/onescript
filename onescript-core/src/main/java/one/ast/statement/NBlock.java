@@ -35,4 +35,9 @@ public class NBlock extends /* maybe this should inherit NStatement? */ ASTNode 
         return "block";
     }
 
+    @Override
+    public String getDataString() {
+        return statements.toString();
+    }
+
 }

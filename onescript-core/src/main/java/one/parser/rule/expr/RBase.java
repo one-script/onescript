@@ -9,6 +9,8 @@ import one.parser.error.OneParseException;
 import one.parser.rule.ParserRule;
 import one.parser.token.Tokens;
 import one.parser.token.TokenType;
+import one.symbol.Symbol;
+import one.symbol.SymbolType;
 
 @SuppressWarnings("rawtypes")
 public class RBase extends ParserRule<NExpression> {
@@ -60,6 +62,14 @@ public class RBase extends ParserRule<NExpression> {
             if (context.currentType() != Tokens.RIGHT_PAREN)
                 throw context.endOrHere(new OneParseException("expected right parenthesis to close expression"));
             context.next();
+        } else if /* check for identifier */ (context.currentType() == Tokens.IDENTIFIER) {
+            // TODO:
+            //  first parse the static symbol
+            //  check for assignment, if assignment parse assign and continue
+            //  check if it is a call or get
+            //  then while more ids come keep collecting and parsing
+            //   if assignment parse assign and continue
+            //   check for call or get
         }
 
         // check for postfix unary operators

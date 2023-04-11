@@ -38,10 +38,11 @@ public class RegexTokenParser<T> implements TokenParser<T> {
 
         // create a token from the
         // match result
+        int startLine = context.currentLine();
         int startIndex = context.index();
         int endIndex = matcher.end();
         Token<T> token = tokenFactory.create(matcher.toMatchResult());
-        token.setLocation(new StringLocation(context.getFile(), context.str(), startIndex, endIndex));
+        token.setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine));
 
         // skip the matched string
         context.index(endIndex + 1);
