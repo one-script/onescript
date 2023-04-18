@@ -1,12 +1,16 @@
 package one.ast.expr;
 
+import one.parser.util.NumberConstant;
+
 import java.util.Objects;
 
 public abstract class NConstant<V> extends NExpression<V> {
 
     public static NConstant<?> of(Object value) {
+        if (value instanceof NumberConstant constant)
+            return new NNumberConstant(constant);
         if (value instanceof Number number)
-            return new NNumberConstant(number.doubleValue());
+            return new NNumberConstant(new NumberConstant(number.doubleValue()));
         if (value instanceof String string)
             return new NStringConstant(string);
 

@@ -1,9 +1,6 @@
 package one.type.any;
 
 import one.type.Any;
-import one.type.OneClassType;
-import one.util.asm.JavaField;
-import one.util.asm.JavaMethod;
 
 public class AnyBool extends AnyBoxable {
 

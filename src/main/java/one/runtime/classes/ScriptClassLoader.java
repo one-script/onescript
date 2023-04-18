@@ -1,7 +1,7 @@
 package one.runtime.classes;
 
 import one.runtime.OneRuntime;
-import one.type.OneClassType;
+import one.type.OneClass;
 
 /**
  * Responsible for compiling, loading and initializing
@@ -29,7 +29,7 @@ public class ScriptClassLoader {
      * @return If it was successful.
      */
     public boolean loadScriptClass(OneJVMClassLoader classLoader,
-                                   OneClassType classType) {
+                                   OneClass classType) {
         throw new UnsupportedOperationException("TODO"); // todo
     }
 

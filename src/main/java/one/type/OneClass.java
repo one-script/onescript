@@ -20,7 +20,7 @@ import org.objectweb.asm.Type;
  *
  * @param <V> The value type.
  */
-public class OneClassType<V> extends OneStrongType {
+public class OneClass<V> extends OneStrongType {
 
     /** The name of the JVM class. */
     private final String jvmClassName;
@@ -49,10 +49,10 @@ public class OneClassType<V> extends OneStrongType {
      */
     private final boolean implementsAny;
 
-    public OneClassType(String internalClassName,
-                        String jvmClassName,
-                        ScriptClassDomain scriptClassDomain,
-                        boolean implementsAny) {
+    public OneClass(String internalClassName,
+                    String jvmClassName,
+                    ScriptClassDomain scriptClassDomain,
+                    boolean implementsAny) {
         super(internalClassName);
 
         this.internalClassName = internalClassName;

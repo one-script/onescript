@@ -1,15 +1,13 @@
 package one.ast.expr;
 
-public class NNumberConstant extends NConstant<Double> {
+import one.parser.util.NumberConstant;
+
+public class NNumberConstant extends NConstant<NumberConstant> {
 
     public NNumberConstant() { }
 
-    public NNumberConstant(Double value) {
+    public NNumberConstant(NumberConstant value) {
         super(value);
-    }
-
-    public NNumberConstant(double value) {
-        this(Double.valueOf(value));
     }
 
     @Override

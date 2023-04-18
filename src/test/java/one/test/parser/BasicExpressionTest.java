@@ -19,8 +19,7 @@ public class BasicExpressionTest {
                     pub static class Int : Number {
                         pub int myInt = 69
                         pub int myFunc() {
-                            let a = (a.b.c(5 ^ 7).d = 4);
-                            return 2 + 6 * 9 - 8;
+                            return 2f + 6D * 9s - 8b;
                         }
                     }
                     """;

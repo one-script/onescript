@@ -1,7 +1,7 @@
 package one.runtime.classes;
 
 import one.runtime.OneRuntime;
-import one.type.OneClassType;
+import one.type.OneClass;
 
 /**
  * The class loader responsible for compiling, loading and
@@ -47,7 +47,7 @@ public class OneJVMClassLoader extends ClassLoader {
      * @return The class.
      */
     private Class<?> loadScriptClass(String jvmName) throws ClassNotFoundException {
-        final OneClassType classType = classRegistry.forJVMName(jvmName);
+        final OneClass classType = classRegistry.forJVMName(jvmName);
         if (classType == null) {
             return null;
         }

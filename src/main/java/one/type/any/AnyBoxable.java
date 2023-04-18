@@ -1,7 +1,7 @@
 package one.type.any;
 
 import one.type.Any;
-import one.type.OneClassType;
+import one.type.OneClass;
 
 /**
  * Any primitive type that can be boxed.
@@ -9,16 +9,16 @@ import one.type.OneClassType;
 public abstract class AnyBoxable implements Any {
 
     /** The boxed value type. */
-    private final OneClassType<?> boxedType;
+    private final OneClass<?> boxedType;
 
-    protected AnyBoxable(OneClassType<?> boxedType) {
+    protected AnyBoxable(OneClass<?> boxedType) {
         this.boxedType = boxedType;
     }
 
     /* TODO: remove this after implementing boxed types */ protected AnyBoxable() { this(null); }
 
     @Override
-    public <T> T as(OneClassType<T> type) {
+    public <T> T as(OneClass<T> type) {
         throw new UnsupportedOperationException("TODO: Boxing of primitives");
     }
 

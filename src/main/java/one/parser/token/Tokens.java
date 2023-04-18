@@ -2,6 +2,7 @@ package one.parser.token;
 
 import one.parser.LexContext;
 import one.parser.OneParser;
+import one.parser.util.NumberConstant;
 import one.parser.util.StringLocation;
 
 import java.lang.reflect.Field;
@@ -67,15 +68,15 @@ public class Tokens {
      *
      * Example: {@code 123} -> {@code numberLiteral(123.0)}
      */
-    public static final TokenType<Double> NUMBER_LITERAL = new TokenType<>("literalNumber") {
+    public static final TokenType<NumberConstant> NUMBER_LITERAL = new TokenType<>("literalNumber") {
         @Override
-        public Token<Double> parseToken(LexContext context) {
+        public Token<NumberConstant> parseToken(LexContext context) {
             int startLine = context.currentLine();
             int startIndex = context.index();
-            double d = context.collectDouble();
+            NumberConstant c = NumberConstant.parseLiteral(context);
             int endIndex = context.index();
 
-            return new Token<>(NUMBER_LITERAL, d)
+            return new Token<>(NUMBER_LITERAL, c)
                     .setLocation(new StringLocation(context.getFile(), context.aStr(), startIndex, endIndex, startLine));
         }
     };

@@ -28,7 +28,7 @@ public interface Any {
     long asLong();
     float asFloat();
     double asDouble();
-    <T> T as(OneClassType<T> type);
+    <T> T as(OneClass<T> type);
     <T> T as(Class<T> type);
 
 }

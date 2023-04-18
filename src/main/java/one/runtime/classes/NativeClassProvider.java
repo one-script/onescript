@@ -1,6 +1,6 @@
 package one.runtime.classes;
 
-import one.type.OneClassType;
+import one.type.OneClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +35,8 @@ public class NativeClassProvider {
     }
 
     /** The cached resolved classes. */
-    private final Map<String, OneClassType> loadedByScriptName = new HashMap<>();
-    private final Map<String, OneClassType> loadedByJVMName = new HashMap<>();
+    private final Map<String, OneClass> loadedByScriptName = new HashMap<>();
+    private final Map<String, OneClass> loadedByJVMName = new HashMap<>();
 
     /** The qualifier tree node. */
     private final TreeNode resolverTree = new TreeNode(null);
@@ -67,8 +67,8 @@ public class NativeClassProvider {
      * @param scriptName The class name as referenced by scripts.
      * @return The class type.
      */
-    public OneClassType findByScriptName(String scriptName) {
-        OneClassType classType = loadedByScriptName.get(scriptName);
+    public OneClass findByScriptName(String scriptName) {
+        OneClass classType = loadedByScriptName.get(scriptName);
         if (classType != null) {
             return classType;
         }
@@ -102,7 +102,7 @@ public class NativeClassProvider {
             throw new IllegalArgumentException("Could not find native class for script name '" + scriptName + "'");
         }
 
-        OneClassType type = loadedByJVMName.get(foundName);
+        OneClass type = loadedByJVMName.get(foundName);
         if (type != null) {
             return type;
         }
@@ -128,7 +128,7 @@ public class NativeClassProvider {
      * @param klass The native class.
      * @return The class type.
      */
-    public OneClassType composeNativeClass(Class<?> klass)
+    public OneClass composeNativeClass(Class<?> klass)
             throws Exception {
         throw new UnsupportedOperationException("TODO"); // todo
     }

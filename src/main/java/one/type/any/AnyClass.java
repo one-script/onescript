@@ -1,7 +1,7 @@
 package one.type.any;
 
 import one.type.Any;
-import one.type.OneClassType;
+import one.type.OneClass;
 import one.util.asm.JavaClass;
 import one.util.asm.JavaMethod;
 
@@ -11,19 +11,19 @@ import one.util.asm.JavaMethod;
 public class AnyClass implements Any {
 
     /** The type of the contained value. */
-    private final OneClassType<?> type;
+    private final OneClass<?> type;
     /** The contained value. */
     private final Object value;
 
     public AnyClass(Object value,
-                    OneClassType<?> type) {
+                    OneClass<?> type) {
         this.type = type;
         this.value = value;
     }
 
     /* Store the reflection instances for this class. */
     public static final JavaClass CLASS = JavaClass.of(AnyClass.class);
-    public static final JavaMethod CONSTRUCTOR = JavaMethod.findConstructor(AnyClass.class, Object.class, OneClassType.class);
+    public static final JavaMethod CONSTRUCTOR = JavaMethod.findConstructor(AnyClass.class, Object.class, OneClass.class);
     public static final JavaMethod METHOD_AS = JavaMethod.find(AnyClass.class, "as");
 
     /*
@@ -126,7 +126,7 @@ public class AnyClass implements Any {
     }
 
     @Override
-    public <T> T as(OneClassType<T> type) {
+    public <T> T as(OneClass<T> type) {
         return null;
     }
 
