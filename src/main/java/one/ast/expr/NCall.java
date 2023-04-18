@@ -1,5 +1,6 @@
 package one.ast.expr;
 
+import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.error.OneParseException;
 import one.parser.token.Tokens;
@@ -23,7 +24,7 @@ public abstract class NCall extends NExpression<Object> {
         while (context.currentType() != Tokens.RIGHT_PAREN) {
             // check for named
             if (context.currentType() == Tokens.IDENTIFIER &&
-                    context.peek(1).getType() == Tokens.ASSIGN) {
+                    context.peek(1).getValue() == OneOperator.ASSIGN) {
                 String name = context.current().getValueAs();
                 context.next(); // skip =
 
@@ -32,7 +33,8 @@ public abstract class NCall extends NExpression<Object> {
 
                 node.addNamedParam(name, expr);
             } else {
-                node.addOrderedParam(context.tryParseNext("exprExpr"));
+                NExpression<?> expr = context.tryParseNext("exprExpr");
+                node.addOrderedParam(expr);
             }
 
             if (context.currentType() == Tokens.RIGHT_PAREN)

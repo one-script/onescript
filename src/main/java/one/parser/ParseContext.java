@@ -70,6 +70,11 @@ public class ParseContext extends SequenceReader<Token<?>> {
         return c == null ? null : c.getType();
     }
 
+    public <T> T currentValue() {
+        Token<?> c = current();
+        return c == null ? null : c.getValueAs();
+    }
+
     /**
      * End a segment if present, otherwise use
      * the current index and capture one character.

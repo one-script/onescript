@@ -2,11 +2,14 @@ package one.lang;
 
 import one.lang.annotation.OneMethod;
 import one.lang.annotation.OneSpecial;
+import one.parser.OneParser;
 import one.parser.token.Token;
 import one.parser.token.TokenType;
 import one.parser.util.Parsable;
 import one.runtime.OneRuntime;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -14,6 +17,18 @@ import java.util.function.Function;
  * Describes and implements operators for OneScript.
  */
 public class OneOperator implements Parsable {
+
+    public static void registerAll(OneParser parser) {
+        try {
+            for (Field field : OneOperator.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers()) || !OneOperator.class.isAssignableFrom(field.getType()))
+                    continue;
+                parser.addOperator((OneOperator) field.get(null));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static class Unary extends OneOperator {
         private Function<Object, Object> simpleEval;
@@ -100,6 +115,41 @@ public class OneOperator implements Parsable {
             .<Double, Double, Double>withSimpleEvaluator((a, b) -> a % b);
     public static final Binary POW = new Binary("pow", "**")
             .<Double, Double, Double>withSimpleEvaluator(Math::pow);
+
+    // Binary
+    public static final Binary SHL = new Binary("shl", "<<")
+            .<Double, Double, Double>withSimpleEvaluator((a, b) -> (double)(a.longValue() << b.longValue()));
+    public static final Binary SHR = new Binary("shr", ">>")
+            .<Double, Double, Double>withSimpleEvaluator((a, b) -> (double)(a.longValue() >> b.longValue()));
+    public static final Unary BINARY_NEG = new Unary("binaryNeg", "~")
+            .<Double, Double>withSimpleEvaluator(a -> (double) ~a.longValue());
+    public static final Binary BINARY_OR = new Binary("binaryOr", "|")
+            .<Double, Double, Double>withSimpleEvaluator((a, b) -> (double)(a.longValue() | b.longValue()));
+    public static final Binary BINARY_AND = new Binary("binaryAnd", "&&")
+            .<Double, Double, Double>withSimpleEvaluator((a, b) -> (double)(a.longValue() & b.longValue()));
+
+    // Logic
+    public static final Binary LOGIC_OR = new Binary("logicOr", "||")
+            .withSimpleEvaluator(Boolean::logicalOr);
+    public static final Binary LOGIC_AND = new Binary("logicAnd", "&&")
+            .withSimpleEvaluator(Boolean::logicalAnd);
+    public static final Unary LOGIC_NEG = new Unary("logicNeg", "!")
+            .<Boolean, Boolean>withSimpleEvaluator(a -> !a);
+
+    // Logic & Binary
+    public static final Binary XOR = new Binary("xor", "^")
+            .<Object, Object, Object>withSimpleEvaluator((a, b) -> {
+                if (a instanceof Boolean bA && b instanceof Boolean bB) {
+                    return bA ^ bB;
+                } else if (a instanceof Double dA && b instanceof Double dB) {
+                    return (double)(dA.longValue() ^ dB.longValue());
+                }
+
+                throw new IllegalArgumentException("XOR cannot be applied to " + a.getClass() + " and " + b.getClass());
+            });
+
+    // Other
+    public static final Binary ASSIGN = new Binary("assign", "=");
 
     //////////////////////////////////////////////
 

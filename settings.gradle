@@ -13,5 +13,3 @@ rootProject.name = 'onescript'
 /// buildsrc start ///
 include 'buildsrc'
 /// buildsrc end ///
-
-include 'onescript-core'

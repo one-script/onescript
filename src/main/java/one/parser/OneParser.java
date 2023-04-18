@@ -157,12 +157,7 @@ public class OneParser {
 
     /* Initialize Defaults */
     {
-        addOperator(OneOperator.ADD);
-        addOperator(OneOperator.SUB);
-        addOperator(OneOperator.MUL);
-        addOperator(OneOperator.DIV);
-        addOperator(OneOperator.MOD);
-        addOperator(OneOperator.POW);
+        OneOperator.registerAll(this);
 
         addParserRule(new RScriptRoot());
         addParserRule(new RClassBody());

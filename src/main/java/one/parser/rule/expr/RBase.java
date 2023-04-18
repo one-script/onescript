@@ -48,15 +48,15 @@ public class RBase extends ParserRule<NExpression> {
             return node;
         }
 
-        /* collect initial value */
-        NExpression value;
+        /* collect initial node */
+        NExpression node;
 
         // check for literal
-        if ((value = context.tryParseNext("literal", NExpression.class)) != null) {
+        if ((node = context.tryParseNext("literal", NExpression.class)) != null) {
 
         } else if /* check for expression */ (context.currentType() == Tokens.LEFT_PAREN) {
             context.next();
-            value = context.tryParseNext("exprExpr", NExpression.class);
+            node = context.tryParseNext("exprExpr", NExpression.class);
             if (context.currentType() != Tokens.RIGHT_PAREN)
                 throw context.here(new OneParseException("expected right parenthesis to close expression"));
             context.next();
@@ -64,54 +64,53 @@ public class RBase extends ParserRule<NExpression> {
             // parse initial symbol
             Symbol symbol = context.parseSymbol(SymbolType.NAME);
 
-            if /* parse assign */ (context.currentType() == Tokens.ASSIGN) {
+            if /* parse assign */ (context.currentValue() == OneOperator.ASSIGN) {
                 context.next();
 
                 NExpression<?> expr = context.tryParseNext("exprExpr");
 
-                return new NSymbolSet()
+                node = new NSymbolSet()
                         .setSymbol(symbol)
                         .setValue(expr);
             } else /* parse call */ if (context.currentType() == Tokens.LEFT_PAREN) {
                 context.next();
-                NExpression<?> node = NCall.parseCall(context,
+
+                node = NCall.parseCall(context,
                         new NSymbolCall().setSymbol(symbol));
-
-                while (context.currentType() == Tokens.DOT) {
-                    context.next();
-                    if (context.currentType() != Tokens.IDENTIFIER)
-                        throw context.here(new OneParseException("Expected identifier to index with"));
-
-                    // get identifier
-                    String name = context.current().getValueAs();
-                    context.next();
-
-                    // check for assignment or call
-                    if (context.currentType() == Tokens.ASSIGN) {
-                        context.next();
-                        NExpression<?> v = context.tryParseNext("exprExpr");
-
-                        node = new NMemberSet()
-                                .setTarget(node)
-                                .setName(name)
-                                .setValue(v);
-                    } else if (context.currentType() == Tokens.LEFT_PAREN) {
-                        context.next();
-                        node = NCall.parseCall(context,
-                                new NMemberCall()
-                                    .setTarget(node)
-                                    .setName(name));
-                    } else {
-                        node = new NMemberGet()
-                                .setTarget(node)
-                                .setName(name);
-                    }
-                }
-
-                return node;
             } else /* basic get, return get */ {
-                return new NSymbolGet()
+                node = new NSymbolGet()
                         .setSymbol(symbol);
+            }
+        }
+
+        while (context.currentType() == Tokens.DOT) {
+            context.next();
+            if (context.currentType() != Tokens.IDENTIFIER)
+                throw context.here(new OneParseException("Expected identifier to index with"));
+
+            // get identifier
+            String name = context.current().getValueAs();
+            context.next();
+
+            // check for assignment or call
+            if (context.currentValue() == OneOperator.ASSIGN) {
+                context.next();
+                NExpression<?> v = context.tryParseNext("exprExpr");
+
+                node = new NMemberSet()
+                        .setTarget(node)
+                        .setName(name)
+                        .setValue(v);
+            } else if (context.currentType() == Tokens.LEFT_PAREN) {
+                context.next();
+                node = NCall.parseCall(context,
+                        new NMemberCall()
+                                .setTarget(node)
+                                .setName(name));
+            } else {
+                node = new NMemberGet()
+                        .setTarget(node)
+                        .setName(name);
             }
         }
 
@@ -121,10 +120,10 @@ public class RBase extends ParserRule<NExpression> {
             OneOperator unaryOp = currentOp.toPostfixUnary();
             if (unaryOp != null) {
                 context.next();
-                NExpression node = new NUnaryOp(unaryOp, value);
+                node = new NUnaryOp(unaryOp, node);
 
                 // perform constant optimization
-                if (context.optimizeConstants() && value instanceof NConstant) {
+                if (context.optimizeConstants() && node instanceof NConstant) {
                     node = NConstant.of(node.evaluateSimple());
                 }
 
@@ -132,7 +131,7 @@ public class RBase extends ParserRule<NExpression> {
             }
         }
 
-        return value;
+        return node;
     }
 
 }

@@ -109,7 +109,6 @@ public class Tokens {
     public static final StaticToken SEMICOLON = TokenType.literal("semicolon", ";");
     public static final StaticToken COLON = TokenType.literal("colon", ":");
 
-    public static final StaticToken ASSIGN = TokenType.literal("assign", "=");
     public static final StaticToken DOT = TokenType.literal("dot", ".");
     public static final StaticToken ARROW = TokenType.literal("arrow", "->");
     public static final StaticToken AT = TokenType.literal("at", "@");

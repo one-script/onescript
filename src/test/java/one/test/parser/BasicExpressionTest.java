@@ -19,13 +19,14 @@ public class BasicExpressionTest {
                     pub static class Int : Number {
                         pub int myInt = 69
                         pub int myFunc() {
-                            let a = (a.b.c().d = 4);
+                            let a = (a.b.c(5 ^ 7).d = 4);
                             return 2 + 6 * 9 - 8;
                         }
                     }
                     """;
 
             LexContext lexContext = parser.lex(new LexContext(parser, src, 0, "src"));
+            System.out.println(lexContext.getTokens());
             ParseContext parseContext = parser.parse(
                     new ParseContext(parser,
                             Sequence.ofList(lexContext.getTokens()),
@@ -36,7 +37,6 @@ public class BasicExpressionTest {
                             .setOptimizeConstants(false)
             );
 
-            System.out.println(lexContext.getTokens());
             System.out.println(ASTVisualizer.newLineToString(parseContext.getRootNode(), true));
         } catch (OneParseException e) {
             e.printFancy(System.err, true, false);

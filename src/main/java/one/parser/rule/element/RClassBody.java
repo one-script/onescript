@@ -4,6 +4,7 @@ import one.ast.ASTNode;
 import one.ast.expr.NExpression;
 import one.ast.element.*;
 import one.lang.OneModifier;
+import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.rule.ParserRule;
 import one.parser.token.TokenType;
@@ -92,7 +93,7 @@ public class RClassBody extends ParserRule<NClassBody> {
                             .setBody(methodBody);
                 } else {
                     NExpression<?> fieldInitializer = null;
-                    if (context.currentType() == Tokens.ASSIGN) {
+                    if (context.currentValue() == OneOperator.ASSIGN) {
                         context.next();
                         fieldInitializer = context.tryParseNext("exprExpr");
                     }

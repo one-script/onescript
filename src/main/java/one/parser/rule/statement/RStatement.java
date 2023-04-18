@@ -4,6 +4,7 @@ import one.ast.expr.NExpression;
 import one.ast.statement.NLetStatement;
 import one.ast.statement.NReturnStatement;
 import one.ast.statement.NStatement;
+import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.error.OneParseException;
 import one.parser.error.OneSyntaxException;
@@ -49,7 +50,7 @@ public class RStatement extends ParserRule<NStatement> {
                     .setType(type);
 
             // collect initial value
-            if (context.currentType() == Tokens.ASSIGN) {
+            if (context.currentValue() == OneOperator.ASSIGN) {
                 context.next();
 
                 NExpression<?> expr = context.tryParseNext("exprExpr");
