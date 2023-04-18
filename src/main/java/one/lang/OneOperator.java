@@ -9,7 +9,6 @@ import one.parser.OneParser;
 import one.parser.ParseContext;
 import one.parser.token.Token;
 import one.parser.token.TokenType;
-import one.parser.util.BiOpSpec;
 import one.parser.util.Parsable;
 import one.parser.util.StringLocation;
 import one.runtime.OneRuntime;
