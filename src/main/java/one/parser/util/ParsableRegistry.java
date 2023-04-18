@@ -3,6 +3,7 @@ package one.parser.util;
 import one.lang.OneOperator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,18 @@ public class ParsableRegistry<T extends Parsable> implements StringReader.Forwar
     /** All parsable objects mapped by name. */
     private final Map<String, T> map = new HashMap<>();
 
+    /** The list. */
+    private List<T> list;
+
+    public ParsableRegistry<T> withList(List<T> list) {
+        this.list = list;
+        return this;
+    }
+
+    public List<T> getList() {
+        return list;
+    }
+
     /** The root node. */
     private final Node root = new Node();
 
@@ -33,6 +46,8 @@ public class ParsableRegistry<T extends Parsable> implements StringReader.Forwar
 
     public void insert(T value) {
         map.put(value.getName(), value);
+        if (list != null)
+            list.add(value);
         for (String str : value.getAliases()) {
             Node current = root;
             for (int i = 0; i < str.length(); i++) {

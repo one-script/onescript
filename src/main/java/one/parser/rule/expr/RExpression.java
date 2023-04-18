@@ -5,6 +5,7 @@ import one.lang.OneOperator;
 import one.parser.ParseContext;
 import one.parser.rule.ParserRule;
 import one.parser.util.BiOpSpec;
+import one.util.SortedList;
 
 import java.util.Set;
 
@@ -26,8 +27,9 @@ public class RExpression extends ParserRule<NExpression> {
 
     @Override
     public NExpression parseNode(ParseContext context) {
-        // parse binary op //
-        return BI_OP_SPEC.parse(context);
+        // parse operators //
+        SortedList<OneOperator.PrioritySet> list = context.getParser().getOperatorSets();
+        return list.get(list.size() - 1).parse(context);
     }
 
 }

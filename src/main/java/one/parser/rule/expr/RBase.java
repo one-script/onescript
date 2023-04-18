@@ -29,7 +29,7 @@ public class RBase extends ParserRule<NExpression> {
             OneOperator currentOp = context.current().getValueAs();
             OneOperator unaryOp = currentOp.toPrefixUnary();
             if (unaryOp == null)
-                throw context.here(new OneParseException("operator " + currentOp + " does not apply as a prefix unary operator"));
+                throw context.here(new OneParseException("Operator " + currentOp + " does not apply as a prefix unary operator"));
             context.next();
             // TODO: maybe do this through rules by calling ParseContext#tryParseNext
             //  once ive optimized that, as this is unintuitive for developers

@@ -15,11 +15,9 @@ import one.parser.token.*;
 import one.parser.util.ParsableRegistry;
 import one.parser.util.StringLocation;
 import one.parser.util.StringReader;
+import one.util.SortedList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The primary OneScript parser.
@@ -53,6 +51,12 @@ public class OneParser {
      * The registered operators.
      */
     final ParsableRegistry<OneOperator> operators = new ParsableRegistry<>();
+
+    /**
+     * The sorted list of operator sets.
+     * This list is sorted from lowest to highest priority.
+     */
+    final SortedList<OneOperator.PrioritySet> operatorSets = new SortedList<>(OneOperator.PrioritySet::compareTo);
 
     /**
      * The registered static tokens.
@@ -128,7 +132,18 @@ public class OneParser {
     }
 
     public OneParser addOperator(OneOperator operator) {
+        // insert operator to be parsed
         operators.insert(operator);
+
+        if (operator.getPriority() != -1) {
+            // get set to insert into
+            int setIndex = operatorSets.find(s -> s.getPriority() == operator.getPriority());
+            OneOperator.PrioritySet set = setIndex == -1 ?
+                    operatorSets.with(new OneOperator.PrioritySet(operator.getPriority())) :
+                    operatorSets.get(setIndex);
+            set.with(operator);
+        }
+
         return this;
     }
 
@@ -139,6 +154,10 @@ public class OneParser {
 
     public ParsableRegistry<OneOperator> getOperators() {
         return operators;
+    }
+
+    public SortedList<OneOperator.PrioritySet> getOperatorSets() {
+        return operatorSets;
     }
 
     public OneParser addStaticToken(StaticToken token) {
@@ -165,8 +184,6 @@ public class OneParser {
         addParserRule(new RBlock());
         addParserRule(new RStatement());
         addParserRule(new RExpression());
-        addParserRule(new RTerm());
-        addParserRule(new RFactor());
         addParserRule(new RBase());
         addParserRule(new RLiteral());
 
