@@ -28,3 +28,21 @@ interface GenFunc$0 {
 }
 
 // Would be loaded under oneclasses.shared.GenFunc$0
+
+// To load a script:
+OneRuntime runtime = runtimeFactory.create();
+APIScript script = runtime.loadScript("MyScript.one");
+script.run(); // enters the runtime
+              // and invokes ScriptClass#script$run()
+/* get type by script name 
+ * then get a method by signature 
+ * then `invokeExternal` calls the method while entering and exiting the runtime */
+OneMethod m = runtime.getType("one.lang.Sus").getMethod(...);
+m.invokeExternal(...)
+
+Object invokeExternal(OneRuntime runtime, Object on, Object... args) {
+	OneRuntime.enterRuntime(runtime);
+	Object res = invoke(on, args);
+	OneRuntime.exitRuntime(runtime);
+	return res;
+}

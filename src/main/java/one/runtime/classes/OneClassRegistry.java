@@ -12,6 +12,10 @@ import java.util.Map;
  */
 public class OneClassRegistry {
 
+    // todo: this does not work with shared class domains
+    //  unless everything is registered, we should index shared
+    //  domains before accessing locals
+
     /**
      * All registered internal classes by their JVM name.
      */

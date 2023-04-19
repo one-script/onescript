@@ -111,7 +111,7 @@ public class NativeClassProvider {
             Class<?> nativeClass = Class.forName(foundName);
             type = composeNativeClass(nativeClass);
             loadedByScriptName.put(scriptName, type);
-            loadedByScriptName.put(nativeClass.getName(), type);
+            loadedByJVMName.put(nativeClass.getName(), type);
             return type;
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException("No Java class by name '" + foundName + "'");
